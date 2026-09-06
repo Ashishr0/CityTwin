@@ -87,7 +87,7 @@ const CityManagement = () => {
                         Manage city vehicles.
                     </p>
 <button
-    onClick={() => navigate("/management/vehicles")}
+    onClick={() => navigate("/management/incidents")}
     className="mt-4 rounded-lg bg-blue-600 px-4 py-2 hover:bg-blue-700"
 >
     Manage

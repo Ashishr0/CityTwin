@@ -50,9 +50,9 @@ const incidentSchema = new mongoose.Schema(
             default: "ACTIVE"
         },
 
-        assignedTo: {
-            type: String
-        }
+       reportedBy: {
+    type: String
+}
     },
     {
         timestamps: true

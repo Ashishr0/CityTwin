@@ -17,6 +17,7 @@ import CityManagement from "./pages/CityManagement";
 import BuildingsManagement from "./pages/BuildingsManagement";
 import TrafficManagement from "./pages/TrafficManagement"; 
 import VehiclesManagement from "./pages/VehiclesManagement";
+import IncidentsManagement from "./pages/IncidentsManagement";
 function average(items, key) {
     if (!Array.isArray(items) || items.length === 0) {
         return 0;
@@ -599,6 +600,10 @@ function App() {
             ? <VehiclesManagement />
             : <Navigate to="/login" replace />
     }
+/>
+<Route
+    path="/management/incidents"
+    element={<IncidentsManagement />}
 />
 
 

@@ -36,6 +36,7 @@ const getIncidentById = async (req, res) => {
 
 // POST /api/incidents
 const createIncident = async (req, res) => {
+    
     try {
         const incident = await Incident.create(req.body);
 
@@ -53,6 +54,7 @@ const createIncident = async (req, res) => {
 
 // PUT /api/incidents/:id
 const updateIncident = async (req, res) => {
+    
     try {
         const incident = await Incident.findByIdAndUpdate(
             req.params.id,
