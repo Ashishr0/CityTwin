@@ -15,7 +15,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import CityManagement from "./pages/CityManagement";
 import BuildingsManagement from "./pages/BuildingsManagement";
-
+import TrafficManagement from "./pages/TrafficManagement"; 
 
 function average(items, key) {
     if (!Array.isArray(items) || items.length === 0) {
@@ -584,6 +584,14 @@ function App() {
                             : <Navigate to="/login" replace />
                     }
                 />
+                <Route
+    path="/management/traffic"
+    element={
+        user
+            ? <TrafficManagement />
+            : <Navigate to="/login" replace />
+    }
+/>
 
 
                 {/* CITY MANAGEMENT */}

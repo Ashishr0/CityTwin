@@ -106,11 +106,12 @@ const CityManagement = () => {
                         Manage city incidents.
                     </p>
 
-                    <button
-                        className="mt-4 rounded-lg bg-blue-600 px-4 py-2 hover:bg-blue-700"
-                    >
-                        Manage
-                    </button>
+                   <button
+    onClick={() => navigate("/management/traffic")}
+    className="mt-4 rounded-lg bg-blue-600 px-4 py-2 hover:bg-blue-700"
+>
+    Manage
+</button>
                 </div>
 
             </div>
