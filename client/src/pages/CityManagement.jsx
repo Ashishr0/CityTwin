@@ -86,12 +86,12 @@ const CityManagement = () => {
                     <p className="mt-2 text-slate-400">
                         Manage city vehicles.
                     </p>
-
-                    <button
-                        className="mt-4 rounded-lg bg-blue-600 px-4 py-2 hover:bg-blue-700"
-                    >
-                        Manage
-                    </button>
+<button
+    onClick={() => navigate("/management/vehicles")}
+    className="mt-4 rounded-lg bg-blue-600 px-4 py-2 hover:bg-blue-700"
+>
+    Manage
+</button>
                 </div>
 
 
