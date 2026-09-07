@@ -189,40 +189,152 @@ const WasteManagement = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-950 p-6 text-white">
-            <div className="mx-auto max-w-7xl">
+        <div className="min-h-screen w-full overflow-x-hidden bg-slate-50 p-3 sm:p-5 lg:p-6">
+            <div className="mx-auto w-full max-w-7xl min-w-0">
 
                 {/* HEADER */}
+                <div className="mb-6 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 via-green-500 to-teal-500 p-6 text-white shadow-[0_10px_30px_rgba(16,185,129,0.15)]">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
 
-                <div className="mb-8">
-                    <h1 className="text-3xl font-bold">
-                        Waste Management
-                    </h1>
+                        <div className="min-w-0">
+                            <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-100">
+                                Smart Waste Infrastructure
+                            </p>
 
-                    <p className="mt-2 text-slate-400">
-                        Monitor and manage city waste collection bins.
-                    </p>
+                            <h1 className="text-2xl font-bold leading-tight sm:text-3xl">
+                                Waste Management
+                            </h1>
+
+                            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-emerald-100">
+                                Monitor waste bins, fill levels, collection activity and critical waste locations across the city.
+                            </p>
+                        </div>
+
+                        <span className="w-fit shrink-0 whitespace-nowrap rounded-full border border-white/30 bg-white/15 px-3 py-1.5 text-[9px] font-bold uppercase tracking-wider text-white backdrop-blur">
+                            ● Waste Active
+                        </span>
+
+                    </div>
+                </div>
+
+                {/* KPI CARDS */}
+                <div className="mb-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+
+                    <div className="rounded-2xl  bg-white p-5 shadow-[0_4px_16px_rgba(15,23,42,0.06)] transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                            Total Bins
+                        </p>
+
+                        <p className="mt-2 text-2xl font-bold text-slate-800">
+                            {wasteData.length}
+                        </p>
+
+                        <p className="mt-1 text-[10px] font-medium text-emerald-600">
+                            Registered waste bins
+                        </p>
+                    </div>
+
+                    <div className="rounded-2xl  bg-white p-5 shadow-[0_4px_16px_rgba(15,23,42,0.06)] transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                            Average Fill Level
+                        </p>
+
+                        <p className="mt-2 text-2xl font-bold text-slate-800">
+                            {wasteData.length
+                                ? (
+                                    wasteData.reduce(
+                                        (sum, item) =>
+                                            sum + Number(item.fillLevel || 0),
+                                        0
+                                    ) / wasteData.length
+                                ).toFixed(1)
+                                : "0.0"}%
+                        </p>
+
+                        <p className="mt-1 text-[10px] font-medium text-blue-600">
+                            Current city average
+                        </p>
+                    </div>
+
+                    <div className="rounded-2xl  bg-white p-5 shadow-[0_4px_16px_rgba(15,23,42,0.06)] transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                            Critical Bins
+                        </p>
+
+                        <p className="mt-2 text-2xl font-bold text-slate-800">
+                            {wasteData.filter(
+                                item => item.status === "CRITICAL"
+                            ).length}
+                        </p>
+
+                        <p className="mt-1 text-[10px] font-medium text-red-500">
+                            Require immediate collection
+                        </p>
+                    </div>
+
+                    <div className="rounded-2xl  bg-white p-5 shadow-[0_4px_16px_rgba(15,23,42,0.06)] transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                            Almost Full
+                        </p>
+
+                        <p className="mt-2 text-2xl font-bold text-slate-800">
+                            {wasteData.filter(
+                                item => item.status === "ALMOST_FULL"
+                            ).length}
+                        </p>
+
+                        <p className="mt-1 text-[10px] font-medium text-amber-600">
+                            Collection recommended
+                        </p>
+                    </div>
+
                 </div>
 
                 {/* FORM */}
+                <div className="mb-6 rounded-2xl  bg-white p-5 shadow-[0_4px_18px_rgba(15,23,42,0.06)] sm:p-6">
 
-                <div className="mb-8 rounded-xl bg-slate-800 p-6">
+                    <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
 
-                    <h2 className="mb-5 text-xl font-semibold">
-                        {editingId
-                            ? "Update Waste Bin"
-                            : "Add Waste Bin"}
-                    </h2>
+                        <div className="min-w-0">
+                            <h2 className="text-lg font-bold leading-tight text-slate-800">
+                                {editingId
+                                    ? "Update Waste Bin"
+                                    : "Add Waste Bin"}
+                            </h2>
+
+                            <p className="mt-1 text-[10px] leading-relaxed text-slate-600">
+                                Enter bin location, fill level, collection status and last collection information.
+                            </p>
+                        </div>
+
+                        <div className="flex shrink-0 flex-wrap gap-2">
+
+                            <span className="w-fit whitespace-nowrap rounded-full bg-emerald-50 px-3 py-1 text-[9px] font-bold uppercase tracking-wider text-emerald-600">
+                                Waste Data
+                            </span>
+
+                            {editingId && (
+                                <button
+                                    type="button"
+                                    onClick={resetForm}
+                                    className="shrink-0 whitespace-nowrap rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-[9px] font-bold text-slate-700 transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 hover:shadow-sm"
+                                >
+                                    Cancel Edit
+                                </button>
+                            )}
+
+                        </div>
+
+                    </div>
 
                     <form
                         onSubmit={handleSubmit}
-                        className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
+                        className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
                     >
 
                         {/* BIN ID */}
-
                         <div>
-                            <label className="mb-1 block text-sm text-slate-300">
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
                                 Bin ID
                             </label>
 
@@ -233,14 +345,13 @@ const WasteManagement = () => {
                                 onChange={handleChange}
                                 placeholder="WB001"
                                 required
-                                className="w-full rounded-lg bg-slate-700 px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 transition focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-100"
                             />
                         </div>
 
                         {/* LATITUDE */}
-
                         <div>
-                            <label className="mb-1 block text-sm text-slate-300">
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
                                 Latitude
                             </label>
 
@@ -252,14 +363,13 @@ const WasteManagement = () => {
                                 onChange={handleChange}
                                 placeholder="28.6139"
                                 required
-                                className="w-full rounded-lg bg-slate-700 px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 transition focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-100"
                             />
                         </div>
 
                         {/* LONGITUDE */}
-
                         <div>
-                            <label className="mb-1 block text-sm text-slate-300">
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
                                 Longitude
                             </label>
 
@@ -271,14 +381,13 @@ const WasteManagement = () => {
                                 onChange={handleChange}
                                 placeholder="77.2090"
                                 required
-                                className="w-full rounded-lg bg-slate-700 px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 transition focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-100"
                             />
                         </div>
 
                         {/* FILL LEVEL */}
-
                         <div>
-                            <label className="mb-1 block text-sm text-slate-300">
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
                                 Fill Level (%)
                             </label>
 
@@ -291,14 +400,13 @@ const WasteManagement = () => {
                                 onChange={handleChange}
                                 placeholder="75"
                                 required
-                                className="w-full rounded-lg bg-slate-700 px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 transition focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-100"
                             />
                         </div>
 
                         {/* STATUS */}
-
                         <div>
-                            <label className="mb-1 block text-sm text-slate-300">
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
                                 Status
                             </label>
 
@@ -306,7 +414,7 @@ const WasteManagement = () => {
                                 name="status"
                                 value={formData.status}
                                 onChange={handleChange}
-                                className="w-full rounded-lg bg-slate-700 px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm font-medium text-slate-800 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-100"
                             >
                                 <option value="EMPTY">EMPTY</option>
                                 <option value="NORMAL">NORMAL</option>
@@ -318,9 +426,8 @@ const WasteManagement = () => {
                         </div>
 
                         {/* LAST COLLECTED */}
-
                         <div>
-                            <label className="mb-1 block text-sm text-slate-300">
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
                                 Last Collected
                             </label>
 
@@ -329,18 +436,17 @@ const WasteManagement = () => {
                                 name="lastCollected"
                                 value={formData.lastCollected}
                                 onChange={handleChange}
-                                className="w-full rounded-lg bg-slate-700 px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-100"
                             />
                         </div>
 
-                        {/* BUTTONS */}
-
-                        <div className="flex items-end gap-3 lg:col-span-3">
+                        {/* SUBMIT */}
+                        <div className="flex flex-wrap items-end gap-3 sm:col-span-2 lg:col-span-3">
 
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="rounded-lg bg-blue-600 px-5 py-2 font-medium hover:bg-blue-700 disabled:opacity-50"
+                                className="shrink-0 whitespace-nowrap rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:from-emerald-700 hover:to-teal-600 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50 active:translate-y-0"
                             >
                                 {loading
                                     ? "Saving..."
@@ -349,180 +455,236 @@ const WasteManagement = () => {
                                     : "Add Waste Bin"}
                             </button>
 
-                            {editingId && (
-                                <button
-                                    type="button"
-                                    onClick={resetForm}
-                                    className="rounded-lg bg-slate-600 px-5 py-2 font-medium hover:bg-slate-500"
-                                >
-                                    Cancel
-                                </button>
-                            )}
-
                         </div>
 
                     </form>
                 </div>
 
-                {/* TABLE */}
+                {/* RECORDS */}
+                <div className="overflow-hidden rounded-2xl  bg-white shadow-[0_4px_18px_rgba(15,23,42,0.06)]">
 
-                <div className="overflow-hidden rounded-xl bg-slate-800">
+                    <div className="flex flex-col gap-4 border-b border-slate-200 p-5 sm:flex-row sm:items-start sm:justify-between sm:p-6">
 
-                    <div className="border-b border-slate-700 p-6">
-                        <h2 className="text-xl font-semibold">
-                            Waste Bins
-                        </h2>
+                        <div className="min-w-0">
+                            <h2 className="text-lg font-bold leading-tight text-slate-800">
+                                Waste Bins
+                            </h2>
+
+                            <p className="mt-1 text-[10px] leading-relaxed text-slate-600">
+                                Review bin locations, fill levels, collection status and activity.
+                            </p>
+                        </div>
+
+                        <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
+
+                            <input
+                                type="text"
+                                placeholder="Search bin..."
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-2.5 text-xs text-slate-800 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-100 sm:w-64"
+                                onChange={(e) => {
+                                    const value = e.target.value.toLowerCase();
+
+                                    document
+                                        .querySelectorAll("[data-waste-row]")
+                                        .forEach(row => {
+                                            row.style.display =
+                                                row.innerText
+                                                    .toLowerCase()
+                                                    .includes(value)
+                                                    ? ""
+                                                    : "none";
+                                        });
+                                }}
+                            />
+
+                            <span className="w-fit shrink-0 whitespace-nowrap rounded-full bg-emerald-50 px-3 py-1 text-[9px] font-bold uppercase tracking-wider text-emerald-600">
+                                {wasteData.length} Total
+                            </span>
+
+                        </div>
+
                     </div>
 
-                    <div className="overflow-x-auto">
+                    {wasteData.length === 0 ? (
+                        <div className="p-10 text-center text-sm font-medium text-slate-600">
+                            No waste bins found.
+                        </div>
+                    ) : (
+                        <div className="overflow-x-auto">
 
-                        <table className="w-full min-w-[900px] text-left">
+                            <table className="w-full min-w-[1100px]">
 
-                            <thead className="bg-slate-700">
-                                <tr>
-                                    <th className="px-6 py-4">
-                                        Bin ID
-                                    </th>
-
-                                    <th className="px-6 py-4">
-                                        Location
-                                    </th>
-
-                                    <th className="px-6 py-4">
-                                        Fill Level
-                                    </th>
-
-                                    <th className="px-6 py-4">
-                                        Status
-                                    </th>
-
-                                    <th className="px-6 py-4">
-                                        Last Collected
-                                    </th>
-
-                                    <th className="px-6 py-4">
-                                        Actions
-                                    </th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-
-                                {wasteData.length === 0 ? (
+                                <thead className="bg-slate-100">
                                     <tr>
-                                        <td
-                                            colSpan="6"
-                                            className="px-6 py-10 text-center text-slate-400"
-                                        >
-                                            No waste bins found.
-                                        </td>
+
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
+                                            Bin ID
+                                        </th>
+
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
+                                            Location
+                                        </th>
+
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
+                                            Fill Level
+                                        </th>
+
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
+                                            Status
+                                        </th>
+
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
+                                            Last Collected
+                                        </th>
+
+                                        <th className="px-4 py-3 text-right text-[9px] font-bold uppercase tracking-wider text-slate-600">
+                                            Actions
+                                        </th>
+
                                     </tr>
-                                ) : (
-                                    wasteData.map((item) => (
-                                        <tr
-                                            key={item._id}
-                                            className="border-t border-slate-700 hover:bg-slate-750"
-                                        >
+                                </thead>
 
-                                            <td className="px-6 py-4 font-medium">
-                                                {item.binId}
-                                            </td>
+                                <tbody>
 
-                                            <td className="px-6 py-4">
-                                                <div>
-                                                    <div>
-                                                        Lat:{" "}
-                                                        {item.location?.lat}
+                                    {wasteData.map((item) => {
+
+                                        const fill = Number(item.fillLevel || 0);
+
+                                        return (
+                                            <tr
+                                                key={item._id}
+                                                data-waste-row
+                                                className="border-t border-slate-200 transition-colors hover:bg-emerald-50/30"
+                                            >
+
+                                                <td className="px-4 py-4 text-xs font-bold text-slate-800">
+                                                    {item.binId}
+                                                </td>
+
+                                                <td className="px-4 py-4">
+                                                    <div className="text-[10px] leading-relaxed text-slate-600">
+                                                        <div>
+                                                            Lat:{" "}
+                                                            <span className="font-semibold text-slate-700">
+                                                                {item.location?.lat}
+                                                            </span>
+                                                        </div>
+
+                                                        <div>
+                                                            Lng:{" "}
+                                                            <span className="font-semibold text-slate-700">
+                                                                {item.location?.lng}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+
+                                                <td className="px-4 py-4">
+
+                                                    <div className="flex min-w-[150px] items-center gap-3">
+
+                                                        <div className="h-2.5 w-24 overflow-hidden rounded-full bg-slate-200">
+                                                            <div
+                                                                className={`h-full rounded-full transition-all ${
+                                                                    fill >= 80
+                                                                        ? "bg-red-500"
+                                                                        : fill >= 60
+                                                                            ? "bg-amber-500"
+                                                                            : "bg-emerald-500"
+                                                                }`}
+                                                                style={{
+                                                                    width: `${Math.min(
+                                                                        Math.max(fill, 0),
+                                                                        100
+                                                                    )}%`
+                                                                }}
+                                                            />
+                                                        </div>
+
+                                                        <span className="whitespace-nowrap text-xs font-bold text-slate-700">
+                                                            {fill}%
+                                                        </span>
+
                                                     </div>
 
-                                                    <div>
-                                                        Lng:{" "}
-                                                        {item.location?.lng}
-                                                    </div>
-                                                </div>
-                                            </td>
+                                                </td>
 
-                                            <td className="px-6 py-4">
-                                                <div className="flex items-center gap-3">
+                                                <td className="px-4 py-4">
 
-                                                    <div className="h-2 w-24 overflow-hidden rounded-full bg-slate-600">
-                                                        <div
-                                                            className="h-full bg-blue-500"
-                                                            style={{
-                                                                width: `${item.fillLevel}%`
-                                                            }}
-                                                        />
-                                                    </div>
-
-                                                    <span>
-                                                        {item.fillLevel}%
+                                                    <span
+                                                        className={`inline-flex rounded-full px-2.5 py-1 text-[9px] font-bold ${
+                                                            item.status === "EMPTY"
+                                                                ? "bg-slate-100 text-slate-600"
+                                                                : item.status === "NORMAL"
+                                                                    ? "bg-emerald-50 text-emerald-600"
+                                                                    : item.status === "ALMOST_FULL"
+                                                                        ? "bg-amber-50 text-amber-600"
+                                                                        : item.status === "CRITICAL"
+                                                                            ? "bg-red-50 text-red-500"
+                                                                            : "bg-slate-100 text-slate-600"
+                                                        }`}
+                                                    >
+                                                        {item.status.replace(
+                                                            "_",
+                                                            " "
+                                                        )}
                                                     </span>
 
-                                                </div>
-                                            </td>
+                                                </td>
 
-                                            <td className="px-6 py-4">
-                                                <span
-                                                    className={`rounded-full px-3 py-1 text-xs font-semibold ${getStatusClass(
-                                                        item.status
-                                                    )}`}
-                                                >
-                                                    {item.status.replace(
-                                                        "_",
-                                                        " "
-                                                    )}
-                                                </span>
-                                            </td>
+                                                <td className="px-4 py-4 text-xs font-medium text-slate-600">
+                                                    {item.lastCollected
+                                                        ? new Date(
+                                                            item.lastCollected
+                                                        ).toLocaleString()
+                                                        : "Not collected"}
+                                                </td>
 
-                                            <td className="px-6 py-4">
-                                                {item.lastCollected
-                                                    ? new Date(
-                                                          item.lastCollected
-                                                      ).toLocaleString()
-                                                    : "Not collected"}
-                                            </td>
+                                                <td className="px-4 py-4 text-right">
 
-                                            <td className="px-6 py-4">
+                                                    <div className="flex items-center justify-end gap-2">
 
-                                                <div className="flex gap-2">
+                                                        <button
+                                                            onClick={() =>
+                                                                handleEdit(item)
+                                                            }
+                                                            className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-[9px] font-bold text-blue-600 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-500 hover:bg-blue-500 hover:text-white hover:shadow-md active:translate-y-0"
+                                                        >
+                                                            Edit
+                                                        </button>
 
-                                                    <button
-                                                        onClick={() =>
-                                                            handleEdit(item)
-                                                        }
-                                                        className="rounded-lg bg-yellow-600 px-3 py-2 text-sm hover:bg-yellow-700"
-                                                    >
-                                                        Edit
-                                                    </button>
+                                                        <button
+                                                            onClick={() =>
+                                                                handleDelete(
+                                                                    item._id
+                                                                )
+                                                            }
+                                                            className="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-[9px] font-bold text-red-500 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-red-500 hover:bg-red-500 hover:text-white hover:shadow-md active:translate-y-0"
+                                                        >
+                                                            Delete
+                                                        </button>
 
-                                                    <button
-                                                        onClick={() =>
-                                                            handleDelete(
-                                                                item._id
-                                                            )
-                                                        }
-                                                        className="rounded-lg bg-red-600 px-3 py-2 text-sm hover:bg-red-700"
-                                                    >
-                                                        Delete
-                                                    </button>
+                                                    </div>
 
-                                                </div>
+                                                </td>
 
-                                            </td>
+                                            </tr>
+                                        );
+                                    })}
 
-                                        </tr>
-                                    ))
-                                )}
+                                </tbody>
 
-                            </tbody>
+                            </table>
 
-                        </table>
-                    </div>
+                        </div>
+                    )}
+
                 </div>
 
             </div>
         </div>
     );
+
 };
 
 export default WasteManagement;

@@ -208,51 +208,156 @@ const WaterManagement = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-950 p-4 text-white sm:p-6 lg:p-8">
+        <div className="min-h-screen w-full overflow-x-hidden bg-slate-50 p-3 sm:p-5 lg:p-6">
+            <div className="mx-auto w-full max-w-7xl min-w-0">
 
-            {/* HEADER */}
-            <div className="mx-auto max-w-7xl">
+                {/* HEADER */}
+                <div className="mb-6 overflow-hidden rounded-2xl bg-gradient-to-r from-cyan-600 via-blue-500 to-indigo-500 p-6 text-white shadow-[0_10px_30px_rgba(6,182,212,0.15)]">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
 
-                <div className="mb-8">
-                    <h1 className="text-3xl font-bold sm:text-4xl">
-                        Water Management
-                    </h1>
+                        <div className="min-w-0">
+                            <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-cyan-100">
+                                Smart Water Infrastructure
+                            </p>
 
-                    <p className="mt-2 text-slate-400">
-                        Monitor and manage city water infrastructure.
-                    </p>
+                            <h1 className="text-2xl font-bold leading-tight sm:text-3xl">
+                                Water Management
+                            </h1>
+
+                            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-cyan-100">
+                                Monitor reservoirs, water consumption, pipeline pressure, leakage and treatment plants across the city.
+                            </p>
+                        </div>
+
+                        <span className="w-fit shrink-0 whitespace-nowrap rounded-full border border-white/30 bg-white/15 px-3 py-1.5 text-[9px] font-bold uppercase tracking-wider text-white backdrop-blur">
+                            ● Water Active
+                        </span>
+
+                    </div>
+                </div>
+
+                {/* KPI CARDS */}
+                <div className="mb-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+
+                    <div className="rounded-2xl  bg-white p-5 shadow-[0_4px_16px_rgba(15,23,42,0.06)] transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                            Water Points
+                        </p>
+
+                        <p className="mt-2 text-2xl font-bold text-slate-800">
+                            {waterData.length}
+                        </p>
+
+                        <p className="mt-1 text-[10px] font-medium text-cyan-600">
+                            Registered locations
+                        </p>
+                    </div>
+
+                    <div className="rounded-2xl  bg-white p-5 shadow-[0_4px_16px_rgba(15,23,42,0.06)] transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                            Reservoir Level
+                        </p>
+
+                        <p className="mt-2 text-2xl font-bold text-slate-800">
+                            {waterData.length
+                                ? (
+                                    waterData.reduce(
+                                        (sum, item) =>
+                                            sum + Number(item.reservoirLevel || 0),
+                                        0
+                                    ) / waterData.length
+                                ).toFixed(1)
+                                : "0.0"}%
+                        </p>
+
+                        <p className="mt-1 text-[10px] font-medium text-blue-600">
+                            Average storage level
+                        </p>
+                    </div>
+
+                    <div className="rounded-2xl  bg-white p-5 shadow-[0_4px_16px_rgba(15,23,42,0.06)] transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                            Daily Consumption
+                        </p>
+
+                        <p className="mt-2 text-2xl font-bold text-slate-800">
+                            {waterData
+                                .reduce(
+                                    (sum, item) =>
+                                        sum + Number(item.dailyConsumption || 0),
+                                    0
+                                )
+                                .toLocaleString()}
+                        </p>
+
+                        <p className="mt-1 text-[10px] font-medium text-indigo-600">
+                            Total recorded usage
+                        </p>
+                    </div>
+
+                    <div className="rounded-2xl  bg-white p-5 shadow-[0_4px_16px_rgba(15,23,42,0.06)] transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                            Leakage Alerts
+                        </p>
+
+                        <p className="mt-2 text-2xl font-bold text-slate-800">
+                            {waterData.filter(
+                                item => item.leakageDetected
+                            ).length}
+                        </p>
+
+                        <p className="mt-1 text-[10px] font-medium text-red-500">
+                            Locations with leakage
+                        </p>
+                    </div>
+
                 </div>
 
                 {/* FORM */}
-                <div className="mb-8 rounded-xl bg-slate-800 p-5 shadow-lg sm:p-6">
+                <div className="mb-6 rounded-2xl  bg-white p-5 shadow-[0_4px_18px_rgba(15,23,42,0.06)] sm:p-6">
 
-                    <div className="mb-6 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+                    <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
 
-                        <h2 className="text-xl font-semibold">
-                            {editingId
-                                ? "Update Water Data"
-                                : "Add Water Data"}
-                        </h2>
+                        <div className="min-w-0">
+                            <h2 className="text-lg font-bold leading-tight text-slate-800">
+                                {editingId
+                                    ? "Update Water Data"
+                                    : "Add Water Data"}
+                            </h2>
 
-                        {editingId && (
-                            <button
-                                onClick={resetForm}
-                                type="button"
-                                className="rounded-lg bg-slate-600 px-4 py-2 hover:bg-slate-500"
-                            >
-                                Cancel Edit
-                            </button>
-                        )}
+                            <p className="mt-1 text-[10px] leading-relaxed text-slate-600">
+                                Enter water infrastructure information for a city location.
+                            </p>
+                        </div>
+
+                        <div className="flex shrink-0 flex-wrap gap-2">
+
+                            <span className="w-fit whitespace-nowrap rounded-full bg-cyan-50 px-3 py-1 text-[9px] font-bold uppercase tracking-wider text-cyan-600">
+                                Water Data
+                            </span>
+
+                            {editingId && (
+                                <button
+                                    onClick={resetForm}
+                                    type="button"
+                                    className="shrink-0 whitespace-nowrap rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-[9px] font-bold text-slate-700 transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 hover:shadow-sm"
+                                >
+                                    Cancel Edit
+                                </button>
+                            )}
+
+                        </div>
+
                     </div>
 
                     <form
                         onSubmit={handleSubmit}
-                        className="grid grid-cols-1 gap-5 md:grid-cols-2"
+                        className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
                     >
 
-                        {/* Location */}
+                        {/* LOCATION */}
                         <div>
-                            <label className="mb-2 block text-sm text-slate-300">
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
                                 Location
                             </label>
 
@@ -263,13 +368,13 @@ const WaterManagement = () => {
                                 onChange={handleChange}
                                 required
                                 placeholder="e.g. City Center"
-                                className="w-full rounded-lg border border-slate-600 bg-slate-900 px-4 py-3 outline-none focus:border-blue-500"
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 transition focus:border-cyan-500 focus:bg-white focus:ring-2 focus:ring-cyan-100"
                             />
                         </div>
 
-                        {/* Reservoir Level */}
+                        {/* RESERVOIR */}
                         <div>
-                            <label className="mb-2 block text-sm text-slate-300">
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
                                 Reservoir Level (%)
                             </label>
 
@@ -282,13 +387,13 @@ const WaterManagement = () => {
                                 max="100"
                                 required
                                 placeholder="e.g. 78"
-                                className="w-full rounded-lg border border-slate-600 bg-slate-900 px-4 py-3 outline-none focus:border-blue-500"
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 transition focus:border-cyan-500 focus:bg-white focus:ring-2 focus:ring-cyan-100"
                             />
                         </div>
 
-                        {/* Daily Consumption */}
+                        {/* CONSUMPTION */}
                         <div>
-                            <label className="mb-2 block text-sm text-slate-300">
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
                                 Daily Consumption
                             </label>
 
@@ -300,13 +405,13 @@ const WaterManagement = () => {
                                 min="0"
                                 required
                                 placeholder="e.g. 4500"
-                                className="w-full rounded-lg border border-slate-600 bg-slate-900 px-4 py-3 outline-none focus:border-blue-500"
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 transition focus:border-cyan-500 focus:bg-white focus:ring-2 focus:ring-cyan-100"
                             />
                         </div>
 
-                        {/* Pipeline Pressure */}
+                        {/* PRESSURE */}
                         <div>
-                            <label className="mb-2 block text-sm text-slate-300">
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
                                 Pipeline Pressure
                             </label>
 
@@ -318,13 +423,13 @@ const WaterManagement = () => {
                                 min="0"
                                 required
                                 placeholder="e.g. 55"
-                                className="w-full rounded-lg border border-slate-600 bg-slate-900 px-4 py-3 outline-none focus:border-blue-500"
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 transition focus:border-cyan-500 focus:bg-white focus:ring-2 focus:ring-cyan-100"
                             />
                         </div>
 
-                        {/* Treatment Plant Status */}
+                        {/* PLANT STATUS */}
                         <div>
-                            <label className="mb-2 block text-sm text-slate-300">
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
                                 Treatment Plant Status
                             </label>
 
@@ -332,7 +437,7 @@ const WaterManagement = () => {
                                 name="treatmentPlantStatus"
                                 value={form.treatmentPlantStatus}
                                 onChange={handleChange}
-                                className="w-full rounded-lg border border-slate-600 bg-slate-900 px-4 py-3 outline-none focus:border-blue-500"
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm font-medium text-slate-800 outline-none transition focus:border-cyan-500 focus:bg-white focus:ring-2 focus:ring-cyan-100"
                             >
                                 <option value="OPERATIONAL">
                                     OPERATIONAL
@@ -348,8 +453,8 @@ const WaterManagement = () => {
                             </select>
                         </div>
 
-                        {/* Leakage */}
-                        <div className="flex items-center rounded-lg border border-slate-700 bg-slate-900 px-4 py-3">
+                        {/* LEAKAGE */}
+                        <div className="flex min-h-[68px] items-center rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 transition hover:border-red-200 hover:bg-red-50/40">
 
                             <input
                                 type="checkbox"
@@ -357,23 +462,30 @@ const WaterManagement = () => {
                                 name="leakageDetected"
                                 checked={form.leakageDetected}
                                 onChange={handleChange}
-                                className="h-5 w-5"
+                                className="h-4 w-4 accent-red-500"
                             />
 
                             <label
                                 htmlFor="leakageDetected"
-                                className="ml-3 cursor-pointer text-sm text-slate-300"
+                                className="ml-3 cursor-pointer"
                             >
-                                Leakage Detected
+                                <span className="block text-xs font-bold text-slate-800">
+                                    Leakage Detected
+                                </span>
+
+                                <span className="block text-[9px] text-slate-500">
+                                    Mark this location if leakage is present.
+                                </span>
                             </label>
+
                         </div>
 
-                        {/* Submit */}
-                        <div className="md:col-span-2">
+                        {/* SUBMIT */}
+                        <div className="flex flex-wrap items-end gap-3 sm:col-span-2 lg:col-span-3">
 
                             <button
                                 type="submit"
-                                className="w-full rounded-lg bg-blue-600 px-5 py-3 font-semibold hover:bg-blue-700 sm:w-auto"
+                                className="shrink-0 whitespace-nowrap rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:from-cyan-700 hover:to-blue-700 hover:shadow-md active:translate-y-0"
                             >
                                 {editingId
                                     ? "Update Water Data"
@@ -385,110 +497,164 @@ const WaterManagement = () => {
                     </form>
                 </div>
 
-                {/* TABLE */}
-                <div className="rounded-xl bg-slate-800 shadow-lg">
+                {/* RECORDS */}
+                <div className="overflow-hidden rounded-2xl  bg-white shadow-[0_4px_18px_rgba(15,23,42,0.06)]">
 
-                    <div className="border-b border-slate-700 p-5 sm:p-6">
-                        <h2 className="text-xl font-semibold">
-                            Water Records
-                        </h2>
+                    <div className="flex flex-col gap-4 border-b border-slate-200 p-5 sm:flex-row sm:items-start sm:justify-between sm:p-6">
+
+                        <div className="min-w-0">
+                            <h2 className="text-lg font-bold leading-tight text-slate-800">
+                                Water Records
+                            </h2>
+
+                            <p className="mt-1 text-[10px] leading-relaxed text-slate-600">
+                                Review reservoirs, pressure, leakage and treatment plant status.
+                            </p>
+                        </div>
+
+                        <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
+
+                            <input
+                                type="text"
+                                placeholder="Search location..."
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-2.5 text-xs text-slate-800 outline-none transition focus:border-cyan-500 focus:bg-white focus:ring-2 focus:ring-cyan-100 sm:w-64"
+                                onChange={(e) => {
+                                    const value = e.target.value.toLowerCase();
+
+                                    document
+                                        .querySelectorAll("[data-water-row]")
+                                        .forEach(row => {
+                                            row.style.display =
+                                                row.innerText
+                                                    .toLowerCase()
+                                                    .includes(value)
+                                                    ? ""
+                                                    : "none";
+                                        });
+                                }}
+                            />
+
+                            <span className="w-fit shrink-0 whitespace-nowrap rounded-full bg-cyan-50 px-3 py-1 text-[9px] font-bold uppercase tracking-wider text-cyan-600">
+                                {waterData.length} Total
+                            </span>
+
+                        </div>
+
                     </div>
 
                     {loading ? (
-                        <div className="p-8 text-center text-slate-400">
-                            Loading water data...
+                        <div className="p-10 text-center">
+                            <p className="text-sm font-semibold text-slate-700">
+                                Loading water data...
+                            </p>
+
+                            <p className="mt-1 text-[10px] text-slate-500">
+                                Connecting to the city water system.
+                            </p>
                         </div>
                     ) : waterData.length === 0 ? (
-                        <div className="p-8 text-center text-slate-400">
+                        <div className="p-10 text-center text-sm font-medium text-slate-600">
                             No water records found.
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
 
-                            <table className="w-full min-w-[900px] text-left">
+                            <table className="w-full min-w-[1050px]">
 
-                                <thead className="bg-slate-900 text-sm text-slate-300">
-
+                                <thead className="bg-slate-100">
                                     <tr>
-                                        <th className="px-5 py-4">
+
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
                                             Location
                                         </th>
 
-                                        <th className="px-5 py-4">
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
                                             Reservoir
                                         </th>
 
-                                        <th className="px-5 py-4">
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
                                             Consumption
                                         </th>
 
-                                        <th className="px-5 py-4">
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
                                             Pressure
                                         </th>
 
-                                        <th className="px-5 py-4">
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
                                             Leakage
                                         </th>
 
-                                        <th className="px-5 py-4">
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
                                             Plant Status
                                         </th>
 
-                                        <th className="px-5 py-4">
+                                        <th className="px-4 py-3 text-right text-[9px] font-bold uppercase tracking-wider text-slate-600">
                                             Actions
                                         </th>
-                                    </tr>
 
+                                    </tr>
                                 </thead>
 
                                 <tbody>
 
                                     {waterData.map((item) => (
-
                                         <tr
                                             key={item._id}
-                                            className="border-t border-slate-700 hover:bg-slate-700/40"
+                                            data-water-row
+                                            className="border-t border-slate-200 transition-colors hover:bg-cyan-50/30"
                                         >
 
-                                            <td className="px-5 py-4 font-medium">
+                                            <td className="px-4 py-4 text-xs font-bold text-slate-800">
                                                 {item.location}
                                             </td>
 
-                                            <td className="px-5 py-4">
-                                                {item.reservoirLevel}%
+                                            <td className="px-4 py-4">
+                                                <span
+                                                    className={`inline-flex rounded-full px-2.5 py-1 text-[9px] font-bold ${
+                                                        Number(item.reservoirLevel) >= 60
+                                                            ? "bg-emerald-50 text-emerald-600"
+                                                            : Number(item.reservoirLevel) >= 30
+                                                                ? "bg-amber-50 text-amber-600"
+                                                                : "bg-red-50 text-red-500"
+                                                    }`}
+                                                >
+                                                    {item.reservoirLevel}%
+                                                </span>
                                             </td>
 
-                                            <td className="px-5 py-4">
+                                            <td className="px-4 py-4 text-xs font-medium text-slate-700">
                                                 {item.dailyConsumption}
                                             </td>
 
-                                            <td className="px-5 py-4">
-                                                {item.pipelinePressure}
+                                            <td className="px-4 py-4">
+                                                <span className="inline-flex rounded-full bg-blue-50 px-2.5 py-1 text-[9px] font-bold text-blue-600">
+                                                    {item.pipelinePressure}
+                                                </span>
                                             </td>
 
-                                            <td className="px-5 py-4">
+                                            <td className="px-4 py-4">
+
                                                 {item.leakageDetected ? (
-                                                    <span className="rounded-full bg-red-500/20 px-3 py-1 text-xs text-red-400">
+                                                    <span className="inline-flex rounded-full bg-red-50 px-2.5 py-1 text-[9px] font-bold text-red-500">
                                                         Detected
                                                     </span>
                                                 ) : (
-                                                    <span className="rounded-full bg-green-500/20 px-3 py-1 text-xs text-green-400">
+                                                    <span className="inline-flex rounded-full bg-emerald-50 px-2.5 py-1 text-[9px] font-bold text-emerald-600">
                                                         Normal
                                                     </span>
                                                 )}
+
                                             </td>
 
-                                            <td className="px-5 py-4">
+                                            <td className="px-4 py-4">
 
                                                 <span
-                                                    className={`rounded-full px-3 py-1 text-xs ${
-                                                        item.treatmentPlantStatus ===
-                                                        "OPERATIONAL"
-                                                            ? "bg-green-500/20 text-green-400"
-                                                            : item.treatmentPlantStatus ===
-                                                              "WARNING"
-                                                            ? "bg-yellow-500/20 text-yellow-400"
-                                                            : "bg-red-500/20 text-red-400"
+                                                    className={`inline-flex rounded-full px-2.5 py-1 text-[9px] font-bold ${
+                                                        item.treatmentPlantStatus === "OPERATIONAL"
+                                                            ? "bg-emerald-50 text-emerald-600"
+                                                            : item.treatmentPlantStatus === "WARNING"
+                                                                ? "bg-amber-50 text-amber-600"
+                                                                : "bg-red-50 text-red-500"
                                                     }`}
                                                 >
                                                     {item.treatmentPlantStatus}
@@ -496,26 +662,20 @@ const WaterManagement = () => {
 
                                             </td>
 
-                                            <td className="px-5 py-4">
+                                            <td className="px-4 py-4 text-right">
 
-                                                <div className="flex gap-2">
+                                                <div className="flex items-center justify-end gap-2">
 
                                                     <button
-                                                        onClick={() =>
-                                                            handleEdit(item)
-                                                        }
-                                                        className="rounded-lg bg-yellow-600 px-3 py-2 text-sm hover:bg-yellow-700"
+                                                        onClick={() => handleEdit(item)}
+                                                        className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-[9px] font-bold text-blue-600 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-500 hover:bg-blue-500 hover:text-white hover:shadow-md active:translate-y-0"
                                                     >
                                                         Edit
                                                     </button>
 
                                                     <button
-                                                        onClick={() =>
-                                                            handleDelete(
-                                                                item._id
-                                                            )
-                                                        }
-                                                        className="rounded-lg bg-red-600 px-3 py-2 text-sm hover:bg-red-700"
+                                                        onClick={() => handleDelete(item._id)}
+                                                        className="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-[9px] font-bold text-red-500 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-red-500 hover:bg-red-500 hover:text-white hover:shadow-md active:translate-y-0"
                                                     >
                                                         Delete
                                                     </button>
@@ -525,7 +685,6 @@ const WaterManagement = () => {
                                             </td>
 
                                         </tr>
-
                                     ))}
 
                                 </tbody>
@@ -540,6 +699,7 @@ const WaterManagement = () => {
             </div>
         </div>
     );
+
 };
 
 export default WaterManagement;

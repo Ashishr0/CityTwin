@@ -35,7 +35,8 @@ const navigation = [
     { label: "Energy", icon: "⚡", path: "/management/energy" },
     { label: "Water", icon: "💧", path: "/management/water" },
     { label: "Waste", icon: "🗑️", path: "/management/waste" },
-    { label: "Buildings", icon: "🏢", path: "/management/buildings" }
+    { label: "Buildings", icon: "🏢", path: "/management/buildings" },
+    { label: "City Map", icon: "🗺️", path: "/map" }
 ];
 
 function StatCard({
@@ -46,33 +47,75 @@ function StatCard({
     trend,
     trendUp = true,
     onClick,
-    accent = "blue"
+    accent = "blue",
+    live = false
 }) {
     const accents = {
-        blue: "bg-blue-50 text-blue-600",
-        purple: "bg-purple-50 text-purple-600",
-        red: "bg-red-50 text-red-500",
-        green: "bg-emerald-50 text-emerald-600",
-        cyan: "bg-cyan-50 text-cyan-600",
-        orange: "bg-orange-50 text-orange-500",
-        yellow: "bg-yellow-50 text-yellow-600"
+        blue: {
+            icon: "bg-blue-50 text-blue-600 border-blue-100",
+            line: "bg-blue-500",
+            glow: "hover:border-blue-300 hover:shadow-blue-100/70"
+        },
+        purple: {
+            icon: "bg-purple-50 text-purple-600 border-purple-100",
+            line: "bg-purple-500",
+            glow: "hover:border-purple-300 hover:shadow-purple-100/70"
+        },
+        red: {
+            icon: "bg-red-50 text-red-500 border-red-100",
+            line: "bg-red-500",
+            glow: "hover:border-red-200 hover:shadow-red-100/70"
+        },
+        green: {
+            icon: "bg-emerald-50 text-emerald-600 border-emerald-100",
+            line: "bg-emerald-500",
+            glow: "hover:border-emerald-300 hover:shadow-emerald-100/70"
+        },
+        cyan: {
+            icon: "bg-cyan-50 text-cyan-600 border-cyan-100",
+            line: "bg-cyan-500",
+            glow: "hover:border-cyan-300 hover:shadow-cyan-100/70"
+        },
+        orange: {
+            icon: "bg-orange-50 text-orange-500 border-orange-100",
+            line: "bg-orange-500",
+            glow: "hover:border-orange-300 hover:shadow-orange-100/70"
+        },
+        yellow: {
+            icon: "bg-yellow-50 text-yellow-600 border-yellow-100",
+            line: "bg-yellow-500",
+            glow: "hover:border-yellow-300 hover:shadow-yellow-100/70"
+        }
     };
+
+    const style = accents[accent] || accents.blue;
 
     return (
         <button
             onClick={onClick}
-            className="group w-full rounded-2xl border border-slate-200 bg-white p-4 text-left shadow-sm transition duration-200 hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg"
+            className={`group relative w-full overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 text-left shadow-[0_2px_10px_rgba(15,23,42,0.04)] transition-all duration-200 hover:-translate-y-1 hover:bg-slate-50/70 hover:shadow-xl ${style.glow}`}
         >
-            <div className="flex items-start justify-between gap-2">
+            <div
+                className={`absolute left-0 top-0 h-full w-1 ${style.line} opacity-70 transition-all duration-200 group-hover:w-1.5`}
+            />
+
+            <div className="flex items-start justify-between gap-3">
                 <div
-                    className={`flex h-10 w-10 items-center justify-center rounded-xl text-lg ${accents[accent]}`}
+                    className={`flex h-10 w-10 items-center justify-center rounded-xl border text-lg transition-transform duration-200 group-hover:scale-110 ${style.icon}`}
                 >
                     {icon}
                 </div>
 
-                {trend !== undefined && (
+                {live && (
+                    <span className="flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-1 text-[9px] font-bold text-emerald-600">
+                        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
+                        LIVE
+                    </span>
+                )}
+
+                {trend !== undefined && !live && (
                     <span
-                        className={`text-xs font-bold ${
+                        className={`text-[10px] font-bold ${
                             trendUp
                                 ? "text-emerald-500"
                                 : "text-red-500"
@@ -83,22 +126,27 @@ function StatCard({
                 )}
             </div>
 
-            <p className="mt-4 text-xs font-medium text-slate-400">
+            <p className="mt-4 text-xs font-semibold text-slate-400">
                 {label}
             </p>
 
             <div className="mt-1 flex items-end justify-between gap-2">
-                <p className="text-2xl font-bold tracking-tight text-slate-900">
+                <p
+                    key={String(value)}
+                    className={`text-2xl font-bold tracking-tight text-slate-900 ${
+                        live ? "animate-pulse" : ""
+                    }`}
+                >
                     {value}
                 </p>
 
-                <span className="text-xs font-semibold text-slate-300 transition group-hover:text-blue-500">
-                    VIEW →
+                <span className="shrink-0 text-lg text-slate-300 transition-transform duration-200 group-hover:translate-x-1 group-hover:text-blue-500">
+                    →
                 </span>
             </div>
 
             {description && (
-                <p className="mt-1 text-[11px] text-slate-400">
+                <p className="mt-2 truncate text-[11px] text-slate-400">
                     {description}
                 </p>
             )}
@@ -213,167 +261,269 @@ export default function Dashboard() {
         });
 
     return (
-        <div className="min-h-screen bg-[#f7f9fc] text-slate-800">
+        <div className="min-h-screen w-full overflow-x-hidden bg-[#f7f9fc] text-slate-800">
 
             {/* DESKTOP SIDEBAR */}
 
-            <aside className="fixed inset-y-0 left-0 z-40 hidden w-56 border-r border-slate-200 bg-white lg:flex">
-                <div className="flex w-full flex-col">
+            <aside className="fixed inset-y-0 left-0 z-40 hidden h-screen w-56 p-2 lg:flex">
+
+                <div className="flex h-full w-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_30px_rgba(15,23,42,0.08)]">
+
+                    {/* SIDEBAR HEADER */}
 
                     <button
                         onClick={() => navigate("/")}
-                        className="flex items-center gap-3 border-b border-slate-100 px-5 py-5 text-left"
+                        className="group border-b border-blue-100 bg-gradient-to-br from-blue-600 via-blue-500 to-indigo-500 px-4 py-5 text-left transition hover:from-blue-700 hover:via-blue-600 hover:to-indigo-600"
                     >
-                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-lg text-white shadow-sm">
-                            🏙️
+                        <div className="flex items-center gap-3">
+
+                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/30 bg-white/15 text-lg text-white shadow-lg backdrop-blur transition duration-300 group-hover:scale-110 group-hover:rotate-2">
+                                🏙️
+                            </div>
+
+                            <div className="min-w-0">
+                                <p className="text-lg font-bold tracking-tight text-white">
+                                    CityTwin
+                                </p>
+
+                                <p className="text-[10px] font-medium text-blue-100">
+                                    Smart City Platform
+                                </p>
+                            </div>
+
                         </div>
 
-                        <div>
-                            <p className="text-lg font-bold text-slate-900">
-                                CityTwin
-                            </p>
+                        <div className="mt-4 h-px bg-white/20" />
 
-                            <p className="text-[10px] text-slate-400">
-                                Smart City Platform
-                            </p>
+                        <div className="mt-3 flex items-center gap-2">
+                            <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-300 shadow-[0_0_0_4px_rgba(110,231,183,0.15)]" />
+
+                            <span className="text-[9px] font-bold uppercase tracking-widest text-blue-100">
+                                System Online
+                            </span>
                         </div>
                     </button>
 
-                    <div className="flex-1 overflow-y-auto px-3 py-5">
+                    {/* SIDEBAR MIDDLE */}
 
-                        <p className="mb-3 px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                            Main Menu
-                        </p>
+                    <div className="flex-1 overflow-y-auto bg-slate-50/70 px-2.5 py-4">
 
-                        <div className="space-y-1">
-                            {navigation.map(item => {
-                                const active =
-                                    location.pathname === item.path;
+                        <div className="rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
 
-                                return (
-                                    <button
-                                        key={item.path}
-                                        onClick={() =>
-                                            navigate(item.path)
-                                        }
-                                        className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
-                                            active
-                                                ? "bg-blue-50 text-blue-600"
-                                                : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
-                                        }`}
-                                    >
-                                        <span className="w-5 text-center">
-                                            {item.icon}
-                                        </span>
+                            <p className="mb-2 px-2 text-[9px] font-bold uppercase tracking-widest text-slate-400">
+                                Main Menu
+                            </p>
 
-                                        {item.label}
-                                    </button>
-                                );
-                            })}
+                            <div className="space-y-1">
+
+                                {navigation.map(item => {
+                                    const active =
+                                        location.pathname === item.path;
+
+                                    return (
+                                        <button
+                                            key={item.path}
+                                            onClick={() =>
+                                                navigate(item.path)
+                                            }
+                                            className={`group relative flex w-full items-center gap-3 rounded-lg border px-2.5 py-2.5 text-sm font-medium transition-all duration-200 ${
+                                                active
+                                                    ? "border-blue-200 bg-blue-50 text-blue-600 shadow-sm"
+                                                    : "border-transparent text-slate-500 hover:-translate-y-0.5 hover:border-blue-100 hover:bg-blue-50/60 hover:text-blue-600 hover:shadow-sm"
+                                            }`}
+                                        >
+
+                                            {active && (
+                                                <span className="absolute left-0 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r-full bg-blue-500" />
+                                            )}
+
+                                            <span
+                                                className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-sm transition-all duration-200 ${
+                                                    active
+                                                        ? "bg-blue-100 shadow-sm"
+                                                        : "bg-slate-50 group-hover:bg-blue-100 group-hover:scale-110"
+                                                }`}
+                                            >
+                                                {item.icon}
+                                            </span>
+
+                                            <span className="truncate">
+                                                {item.label}
+                                            </span>
+
+                                            <span
+                                                className={`ml-auto text-xs transition-all duration-200 ${
+                                                    active
+                                                        ? "translate-x-0 text-blue-400"
+                                                        : "-translate-x-1 text-transparent group-hover:translate-x-0 group-hover:text-blue-300"
+                                                }`}
+                                            >
+                                                →
+                                            </span>
+
+                                        </button>
+                                    );
+                                })}
+
+                            </div>
+
                         </div>
 
-                        <p className="mb-3 mt-7 px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                            Management
-                        </p>
-
-                        <button
-                            onClick={() => navigate("/management")}
-                            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-500 transition hover:bg-slate-50 hover:text-slate-900"
-                        >
-                            <span className="w-5 text-center">
-                                ⚙️
-                            </span>
-
-                            City Management
-                        </button>
                     </div>
 
-                    <div className="border-t border-slate-100 p-3">
+                    {/* SIDEBAR FOOTER */}
 
-                        <div className="mb-3 rounded-xl bg-slate-50 p-3">
-                            <p className="text-[10px] text-slate-400">
-                                Signed in as
-                            </p>
+                    <div className="border-t border-indigo-100 bg-gradient-to-br from-slate-50 to-indigo-50/70 p-3">
 
-                            <p className="mt-1 truncate text-sm font-bold text-slate-800">
-                                {user?.name || "City Admin"}
-                            </p>
+                        <div className="rounded-xl border border-indigo-100 bg-white p-3 shadow-sm">
 
-                            <p className="text-[10px] uppercase text-slate-400">
-                                {user?.role || "ADMIN"}
-                            </p>
+                            <div className="flex items-center gap-2">
+
+                                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-blue-500 text-xs font-bold text-white shadow-sm">
+                                    {(user?.name || "A").charAt(0).toUpperCase()}
+                                </div>
+
+                                <div className="min-w-0 flex-1">
+
+                                    <p className="text-[9px] font-medium uppercase tracking-wider text-slate-400">
+                                        Signed in as
+                                    </p>
+
+                                    <p className="mt-0.5 truncate text-xs font-bold text-slate-800">
+                                        {user?.name || "City Admin"}
+                                    </p>
+
+                                </div>
+
+                                <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_0_3px_rgba(16,185,129,0.10)]" />
+
+                            </div>
+
+                            <div className="mt-3 flex items-center justify-between rounded-lg bg-slate-50 px-2.5 py-2">
+
+                                <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
+                                    Role
+                                </span>
+
+                                <span className="rounded-full bg-indigo-50 px-2 py-0.5 text-[9px] font-bold text-indigo-600">
+                                    {user?.role || "ADMIN"}
+                                </span>
+
+                            </div>
+
                         </div>
 
                         <button
                             onClick={logout}
-                            className="w-full rounded-xl px-3 py-2 text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-red-500"
+                            className="group mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-transparent px-3 py-2 text-xs font-semibold text-slate-500 transition-all duration-200 hover:border-red-100 hover:bg-red-50 hover:text-red-500"
                         >
-                            ↪ Logout
+                            <span className="transition-transform duration-200 group-hover:-translate-x-1">
+                                ↪
+                            </span>
+
+                            Logout
                         </button>
+
                     </div>
+
                 </div>
+
             </aside>
 
             {/* MAIN */}
 
-            <div className="lg:ml-56">
+            <div className="min-h-screen min-w-0 lg:fixed lg:inset-y-0 lg:left-[14.25rem] lg:right-0 lg:overflow-y-auto">
 
                 {/* TOP BAR */}
 
-                <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur">
-                    <div className="mx-auto flex min-h-16 max-w-[1500px] items-center justify-between gap-4 px-4 sm:px-6">
+                <header className="sticky top-0 z-30 px-3 py-3 sm:px-5 lg:px-6">
 
-                        <div className="flex items-center gap-3">
-                            <div className="h-2.5 w-2.5 rounded-full bg-emerald-500 shadow-[0_0_0_4px_rgba(16,185,129,0.1)]" />
+                    <div className="mx-auto flex min-h-16 max-w-[1500px] items-center justify-between gap-4 rounded-2xl border border-emerald-200 bg-gradient-to-r from-teal-600 via-emerald-500 to-cyan-600 px-4 py-3 shadow-[0_6px_25px_rgba(37,99,235,0.16)] backdrop-blur transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_30px_rgba(37,99,235,0.22)]">
+
+                        {/* CITYTWIN BRAND */}
+
+                        <button
+                            onClick={() => navigate("/")}
+                            className="group flex min-w-0 items-center gap-3 rounded-xl border border-white/20 bg-white/10 px-2.5 py-2 text-left backdrop-blur transition-all duration-200 hover:bg-white/20"
+                        >
+
+                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/30 bg-white/20 text-lg shadow-sm transition duration-300 group-hover:scale-110 group-hover:rotate-2">
+                                🏙️
+                            </div>
+
+                            <div className="min-w-0">
+                                <p className="truncate text-sm font-bold tracking-tight text-white">
+                                    CityTwin
+                                </p>
+
+                                <p className="hidden text-[9px] font-medium text-emerald-100 sm:block">
+                                    Smart City Platform
+                                </p>
+                            </div>
+
+                        </button>
+
+                        {/* LIVE MONITORING */}
+
+                        <div className="hidden items-center gap-3 md:flex">
+
+                            <div className="h-8 w-px bg-white/20" />
 
                             <div>
-                                <p className="text-xs font-bold text-slate-700">
+                                <p className="text-xs font-bold tracking-wide text-white">
                                     LIVE CITY MONITORING
                                 </p>
 
-                                <p className="hidden text-[10px] text-slate-400 sm:block">
+                                <p className="text-[9px] font-medium text-emerald-100">
                                     Real-time digital twin
                                 </p>
                             </div>
+
                         </div>
 
-                        <div className="flex items-center gap-3">
+                        {/* HEADER ACTIONS */}
 
-                            <div
-                                className={`rounded-full px-3 py-1.5 text-[11px] font-bold ${
-                                    connected
-                                        ? "bg-emerald-50 text-emerald-600"
-                                        : "bg-red-50 text-red-500"
-                                }`}
-                            >
-                                ● {connected ? "LIVE" : "OFFLINE"}
-                            </div>
-
-                            <div className="hidden text-right sm:block">
-                                <p className="text-xs font-bold text-slate-800">
-                                    {user?.name || "City Admin"}
-                                </p>
-
-                                <p className="text-[10px] text-slate-400">
-                                    {user?.role || "ADMIN"}
-                                </p>
-                            </div>
+                        <div className="ml-auto flex shrink-0 items-center gap-2 sm:gap-3">
 
                             <button
-                                onClick={logout}
-                                className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-500 transition hover:bg-slate-50"
+                                onClick={() => navigate("/map")}
+                                className="hidden items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-[9px] font-bold text-white backdrop-blur transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/20 sm:flex"
                             >
-                                Logout
+                                🗺️
+                                <span>City Map</span>
                             </button>
+
+                            <div className="hidden rounded-xl border border-white/20 bg-white/10 px-3 py-2 backdrop-blur lg:block">
+                                <p className="text-[8px] font-bold uppercase tracking-wider text-emerald-100">
+                                    Status
+                                </p>
+
+                                <p className="mt-0.5 text-[10px] font-bold text-white">
+                                    All Systems Active
+                                </p>
+                            </div>
+
+                            <div className="flex items-center gap-2 rounded-xl border border-emerald-200/40 bg-emerald-400/20 px-3 py-2 shadow-sm backdrop-blur transition-all duration-200 hover:bg-emerald-400/30">
+
+                                <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-300 shadow-[0_0_0_4px_rgba(167,243,208,0.15)]" />
+
+                                <span className="text-[9px] font-bold uppercase tracking-wider text-white">
+                                    LIVE
+                                </span>
+
+                            </div>
+
                         </div>
+
                     </div>
+
                 </header>
 
-                <main className="mx-auto w-full max-w-[1500px] px-4 py-5 sm:px-6 lg:px-7">
+                <main className="w-full min-w-0 overflow-x-hidden px-3 py-5 sm:px-6 lg:px-7">
 
                     {/* WELCOME */}
 
-                    <section className="relative mb-5 overflow-hidden rounded-2xl bg-gradient-to-r from-blue-50 via-sky-50 to-white px-5 py-6 sm:px-7">
+                    <section className="relative mb-5 overflow-hidden rounded-2xl border border-blue-100 bg-gradient-to-r from-blue-50 via-sky-50 to-white shadow-sm px-5 py-6 sm:px-7">
 
                         <div className="relative z-10 max-w-xl">
 
@@ -413,6 +563,7 @@ export default function Dashboard() {
                             onClick={() =>
                                 navigate("/management/buildings")
                             }
+                            live
                         />
 
                         <StatCard
@@ -425,6 +576,7 @@ export default function Dashboard() {
                                 navigate("/management/vehicles")
                             }
                             accent="purple"
+                            live
                         />
 
                         <StatCard
@@ -438,6 +590,7 @@ export default function Dashboard() {
                                 navigate("/management/incidents")
                             }
                             accent="red"
+                            live
                         />
 
                         <StatCard
@@ -450,6 +603,7 @@ export default function Dashboard() {
                                 navigate("/management/environment")
                             }
                             accent="green"
+                            live
                         />
 
                         <StatCard
@@ -462,6 +616,7 @@ export default function Dashboard() {
                                 navigate("/management/water")
                             }
                             accent="cyan"
+                            live
                         />
 
                         <StatCard
@@ -474,6 +629,7 @@ export default function Dashboard() {
                                 navigate("/management/waste")
                             }
                             accent="yellow"
+                            live
                         />
 
                         <StatCard
@@ -486,6 +642,7 @@ export default function Dashboard() {
                                 navigate("/management/energy")
                             }
                             accent="orange"
+                            live
                         />
 
                         <button
@@ -519,136 +676,158 @@ export default function Dashboard() {
 
                     </section>
 
-                    {/* MAP + ALERTS */}
+                    {/* RECENT ALERTS */}
 
-                    <section className="mt-5 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                    <section className="mt-5 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm shadow-slate-200/50">
 
-                        <div className="flex flex-col gap-3 border-b border-slate-100 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="flex items-center justify-between border-b border-slate-100 px-4 py-4 sm:px-5">
 
                             <div>
                                 <h2 className="font-bold text-slate-900">
-                                    🗺️ City Digital Map
+                                    🔔 Recent Alerts
                                 </h2>
 
-                                <p className="mt-1 text-xs text-slate-400">
-                                    Real-time city infrastructure monitoring
+                                <p className="mt-1 text-[10px] text-slate-400">
+                                    Live system notifications
                                 </p>
                             </div>
 
-                            <div className="flex flex-wrap gap-3 text-[10px] font-medium text-slate-500">
-                                <span>🔴 Traffic</span>
-                                <span>🟢 Environment</span>
-                                <span>🟡 Waste</span>
-                                <span>🔵 Vehicle</span>
-                                <span>🟣 Incident</span>
-                            </div>
+                            <span className="rounded-full bg-red-50 px-2.5 py-1 text-[10px] font-bold text-red-500">
+                                {alerts.length} Active
+                            </span>
+
                         </div>
 
-                        <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_310px]">
+                        <div className="p-3 sm:p-4">
 
-                            <div className="min-w-0 p-2 sm:p-3">
-                                <CityMap />
-                            </div>
+                            {alerts.length === 0 ? (
 
-                            <div className="border-t border-slate-100 xl:border-l xl:border-t-0">
+                                <div className="py-10 text-center">
 
-                                <div className="flex items-center justify-between border-b border-slate-100 px-4 py-4">
-                                    <div>
-                                        <h3 className="font-bold text-slate-900">
-                                            🔔 Recent Alerts
-                                        </h3>
-
-                                        <p className="text-[10px] text-slate-400">
-                                            Live system notifications
-                                        </p>
+                                    <div className="text-3xl">
+                                        ✅
                                     </div>
 
-                                    <span className="rounded-full bg-red-50 px-2 py-1 text-[10px] font-bold text-red-500">
-                                        {alerts.length}
-                                    </span>
+                                    <p className="mt-2 text-sm font-bold text-emerald-600">
+                                        All systems normal
+                                    </p>
+
+                                    <p className="mt-1 text-[10px] text-slate-400">
+                                        No critical alerts detected.
+                                    </p>
+
                                 </div>
 
-                                <div className="max-h-[500px] overflow-y-auto p-3">
+                            ) : (
 
-                                    {alerts.length === 0 ? (
-                                        <div className="py-12 text-center">
-                                            <div className="text-3xl">
-                                                ✅
-                                            </div>
+                                <div className="grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3">
 
-                                            <p className="mt-2 text-sm font-bold text-emerald-600">
-                                                All systems normal
-                                            </p>
+                                    {alerts.map((alert, index) => (
 
-                                            <p className="mt-1 text-[10px] text-slate-400">
-                                                No critical alerts detected.
-                                            </p>
-                                        </div>
-                                    ) : (
-                                        <div className="space-y-2">
-                                            {alerts.map((alert, index) => (
-                                                <button
-                                                    key={`${alert.title}-${index}`}
-                                                    onClick={() =>
-                                                        navigate(alert.path)
-                                                    }
-                                                    className="group w-full rounded-xl border border-slate-100 bg-white p-3 text-left transition hover:border-blue-200 hover:bg-blue-50"
+                                        <button
+                                            key={`${alert.title}-${index}`}
+                                            onClick={() =>
+                                                navigate(alert.path)
+                                            }
+                                            className={`group relative w-full overflow-hidden rounded-xl border bg-white p-3 text-left shadow-[0_2px_8px_rgba(15,23,42,0.04)] transition-all duration-200 hover:-translate-y-1 hover:shadow-lg ${
+                                                alert.type === "CRITICAL"
+                                                    ? "border-red-100 hover:border-red-300 hover:bg-red-50/30"
+                                                    : "border-orange-100 hover:border-orange-300 hover:bg-orange-50/30"
+                                            }`}
+                                        >
+
+                                            <div
+                                                className={`absolute left-0 top-0 h-full w-1 transition-all duration-200 group-hover:w-1.5 ${
+                                                    alert.type === "CRITICAL"
+                                                        ? "bg-red-500"
+                                                        : "bg-orange-400"
+                                                }`}
+                                            />
+
+                                            <div className="flex gap-3">
+
+                                                <span
+                                                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border text-sm shadow-sm transition-transform duration-200 group-hover:scale-110 ${
+                                                        alert.type === "CRITICAL"
+                                                            ? "border-red-100 bg-red-50"
+                                                            : "border-orange-100 bg-orange-50"
+                                                    }`}
                                                 >
-                                                    <div className="flex gap-3">
+                                                    {alert.icon}
+                                                </span>
 
-                                                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-50 text-sm">
-                                                            {alert.icon}
+                                                <div className="min-w-0 flex-1">
+
+                                                    <div className="flex items-start justify-between gap-2">
+
+                                                        <p className="truncate text-xs font-bold text-slate-800">
+                                                            {alert.title}
+                                                        </p>
+
+                                                        <span className="shrink-0 text-base text-slate-300 transition-all duration-200 group-hover:translate-x-1 group-hover:text-blue-500">
+                                                            →
                                                         </span>
 
-                                                        <div className="min-w-0 flex-1">
-
-                                                            <div className="flex items-start justify-between gap-2">
-                                                                <p className="text-xs font-bold text-slate-800">
-                                                                    {alert.title}
-                                                                </p>
-
-                                                                <span className="text-slate-300 group-hover:text-blue-500">
-                                                                    →
-                                                                </span>
-                                                            </div>
-
-                                                            <p className="mt-1 text-[10px] text-slate-400">
-                                                                {alert.detail}
-                                                            </p>
-
-                                                            <span
-                                                                className={`mt-2 inline-flex rounded-full px-2 py-0.5 text-[8px] font-bold ${
-                                                                    alert.type === "CRITICAL"
-                                                                        ? "bg-red-50 text-red-500"
-                                                                        : "bg-orange-50 text-orange-500"
-                                                                }`}
-                                                            >
-                                                                {alert.type}
-                                                            </span>
-                                                        </div>
                                                     </div>
-                                                </button>
-                                            ))}
-                                        </div>
-                                    )}
 
-                                    <button
-                                        onClick={() =>
-                                            navigate("/management/incidents")
-                                        }
-                                        className="mt-3 w-full rounded-lg py-2 text-[10px] font-bold text-blue-600 hover:bg-blue-50"
-                                    >
-                                        View All Alerts →
-                                    </button>
+                                                    <p className="mt-1 truncate text-[10px] text-slate-400">
+                                                        {alert.detail}
+                                                    </p>
+
+                                                    <div className="mt-2 flex items-center justify-between gap-2">
+
+                                                        <span
+                                                            className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[8px] font-bold ${
+                                                                alert.type === "CRITICAL"
+                                                                    ? "bg-red-50 text-red-500"
+                                                                    : "bg-orange-50 text-orange-500"
+                                                            }`}
+                                                        >
+                                                            <span
+                                                                className={`h-1.5 w-1.5 rounded-full ${
+                                                                    alert.type === "CRITICAL"
+                                                                        ? "animate-pulse bg-red-500"
+                                                                        : "bg-orange-400"
+                                                                }`}
+                                                            />
+
+                                                            {alert.type}
+                                                        </span>
+
+                                                        <span className="text-[9px] font-semibold text-slate-300 transition group-hover:text-slate-500">
+                                                            View details
+                                                        </span>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </button>
+
+                                    ))}
 
                                 </div>
-                            </div>
+
+                            )}
+
+                            <button
+                                onClick={() =>
+                                    navigate("/management/incidents")
+                                }
+                                className="mt-3 w-full rounded-lg py-2 text-[10px] font-bold text-blue-600 transition hover:bg-blue-50"
+                            >
+                                View All Alerts →
+                            </button>
+
                         </div>
+
                     </section>
 
                     {/* ANALYTICS */}
 
-                    <section className="mt-5 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+                    <section className="mt-8 rounded-2xl border border-slate-200 bg-gradient-to-b from-white to-slate-50/60 p-4 shadow-sm shadow-slate-200/50 sm:p-5">
 
                         <div className="mb-4 flex items-center justify-between">
 
@@ -672,19 +851,64 @@ export default function Dashboard() {
 
                     </section>
 
-                    <footer className="mt-5 flex flex-col justify-between gap-2 border-t border-slate-200 py-4 text-[10px] text-slate-400 sm:flex-row">
-                        <span>
-                            CityTwin • Smart City Digital Twin
-                        </span>
+                    <footer className="mt-8 rounded-2xl border border-indigo-100 bg-gradient-to-r from-white via-blue-50/40 to-indigo-50/60 p-4 shadow-[0_4px_18px_rgba(15,23,42,0.04)] transition-all duration-300 hover:border-blue-200 hover:shadow-[0_8px_25px_rgba(37,99,235,0.08)]">
+                        <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
 
-                        <span>
-                            Last update:{" "}
-                            {cityData?.timestamp
-                                ? new Date(
-                                      cityData.timestamp
-                                  ).toLocaleTimeString()
-                                : "--"}
-                        </span>
+                            <div className="flex items-center gap-3">
+                                <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-blue-100 bg-blue-50 text-sm shadow-sm transition-transform duration-300 hover:scale-110">
+                                    🏙️
+                                </div>
+
+                                <div>
+                                    <p className="text-xs font-bold text-slate-700">
+                                        CityTwin
+                                    </p>
+
+                                    <p className="text-[9px] text-slate-400">
+                                        Smart City Digital Twin
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-3">
+
+                                <div className="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2">
+                                    <div className="flex items-center gap-2">
+                                        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
+
+                                        <span className="text-[9px] font-bold text-emerald-600">
+                                            SYSTEM LIVE
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div className="group rounded-xl border border-blue-100 bg-blue-50 px-3 py-2 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-200 hover:bg-blue-100/70 hover:shadow-md">
+                                    <div className="flex items-center gap-2">
+
+                                        <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-xs shadow-sm transition-transform duration-200 group-hover:scale-110">
+                                            🕐
+                                        </span>
+
+                                        <div>
+                                            <p className="text-[8px] font-bold uppercase tracking-wider text-blue-100">
+                                                Last update
+                                            </p>
+
+                                            <p className="mt-0.5 text-[10px] font-bold text-blue-700">
+                                                {cityData?.timestamp
+                                                    ? new Date(
+                                                          cityData.timestamp
+                                                      ).toLocaleTimeString()
+                                                    : "--"}
+                                            </p>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
                     </footer>
 
                 </main>

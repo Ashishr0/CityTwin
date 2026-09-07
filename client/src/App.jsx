@@ -23,6 +23,8 @@ import EnergyManagement from "./pages/EnergyManagement";
 import WaterManagement from "./pages/WaterManagement";
 import WasteManagement from "./pages/WasteManagement";
 import Dashboard from "./pages/Dashboard";
+import MapPage from "./pages/MapPage";
+import Alerts from "./pages/Alerts";
 function average(items, key) {
     if (!Array.isArray(items) || items.length === 0) {
         return 0;
@@ -113,6 +115,17 @@ function App() {
                 />
 
 
+                {/* CITY MAP */}
+
+                <Route
+                    path="/map"
+                    element={
+                        user
+                            ? <MapPage />
+                            : <Navigate to="/login" replace />
+                    }
+                />
+
                 {/* BUILDINGS MANAGEMENT */}
 
                 <Route
@@ -196,6 +209,18 @@ function App() {
                     element={
                         user
                             ? <CityManagement />
+                            : <Navigate to="/login" replace />
+                    }
+                />
+
+
+                {/* ALERT CENTER */}
+
+                <Route
+                    path="/alerts"
+                    element={
+                        user
+                            ? <Alerts />
                             : <Navigate to="/login" replace />
                     }
                 />

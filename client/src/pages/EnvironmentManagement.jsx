@@ -16,7 +16,7 @@ const EnvironmentManagement = () => {
         noise: ""
     });
 
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("city_twin_token");
 
     const fetchEnvironmentData = async () => {
         try {
@@ -180,106 +180,262 @@ const EnvironmentManagement = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-950 p-4 text-white sm:p-6 lg:p-8">
+        <div className="min-h-screen w-full overflow-x-hidden bg-slate-50 p-3 sm:p-5 lg:p-6">
+            <div className="mx-auto w-full max-w-7xl min-w-0">
 
-            <div className="mx-auto max-w-7xl">
+                {/* HEADER */}
+                <div className="mb-6 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 via-green-500 to-teal-500 p-6 text-white shadow-[0_10px_30px_rgba(16,185,129,0.15)]">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                        <div className="min-w-0">
+                            <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-100">
+                                Environmental Monitoring
+                            </p>
 
-                <h1 className="mb-8 text-3xl font-bold sm:text-4xl">
-                    Environment Management
-                </h1>
+                            <h1 className="text-2xl font-bold leading-tight sm:text-3xl">
+                                Environment Management
+                            </h1>
 
-                <div className="rounded-2xl border border-slate-800 bg-slate-900 p-5 sm:p-6">
+                            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-emerald-100">
+                                Monitor air quality, temperature, humidity and environmental conditions across the city.
+                            </p>
+                        </div>
 
-                    <h2 className="mb-6 text-xl font-semibold">
-                        {editingId
-                            ? "Update Environment Data"
-                            : "Add Environment Data"}
-                    </h2>
+                        <span className="w-fit shrink-0 whitespace-nowrap rounded-full border border-white/30 bg-white/15 px-3 py-1.5 text-[9px] font-bold uppercase tracking-wider text-white backdrop-blur">
+                            ● Sensors Active
+                        </span>
+                    </div>
+                </div>
+
+                {/* KPI CARDS */}
+                <div className="mb-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+
+                    <div className="rounded-2xl  bg-white p-5 shadow-[0_4px_16px_rgba(15,23,42,0.06)] transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                            Total Sensors
+                        </p>
+                        <p className="mt-2 text-2xl font-bold text-slate-800">
+                            {environmentData.length}
+                        </p>
+                        <p className="mt-1 text-[10px] font-medium text-emerald-600">
+                            Environmental records
+                        </p>
+                    </div>
+
+                    <div className="rounded-2xl  bg-white p-5 shadow-[0_4px_16px_rgba(15,23,42,0.06)] transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                            Average AQI
+                        </p>
+                        <p className="mt-2 text-2xl font-bold text-slate-800">
+                            {environmentData.length
+                                ? (
+                                    environmentData.reduce(
+                                        (sum, item) => sum + Number(item.aqi || 0),
+                                        0
+                                    ) / environmentData.length
+                                ).toFixed(1)
+                                : "0.0"}
+                        </p>
+                        <p className="mt-1 text-[10px] font-medium text-blue-600">
+                            Air quality index
+                        </p>
+                    </div>
+
+                    <div className="rounded-2xl  bg-white p-5 shadow-[0_4px_16px_rgba(15,23,42,0.06)] transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                            Avg Temperature
+                        </p>
+                        <p className="mt-2 text-2xl font-bold text-slate-800">
+                            {environmentData.length
+                                ? (
+                                    environmentData.reduce(
+                                        (sum, item) => sum + Number(item.temperature || 0),
+                                        0
+                                    ) / environmentData.length
+                                ).toFixed(1)
+                                : "0.0"} °C
+                        </p>
+                        <p className="mt-1 text-[10px] font-medium text-orange-600">
+                            City temperature
+                        </p>
+                    </div>
+
+                    <div className="rounded-2xl  bg-white p-5 shadow-[0_4px_16px_rgba(15,23,42,0.06)] transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                            Avg Humidity
+                        </p>
+                        <p className="mt-2 text-2xl font-bold text-slate-800">
+                            {environmentData.length
+                                ? (
+                                    environmentData.reduce(
+                                        (sum, item) => sum + Number(item.humidity || 0),
+                                        0
+                                    ) / environmentData.length
+                                ).toFixed(1)
+                                : "0.0"}%
+                        </p>
+                        <p className="mt-1 text-[10px] font-medium text-cyan-600">
+                            Atmospheric humidity
+                        </p>
+                    </div>
+
+                </div>
+
+                {/* FORM */}
+                <div className="mb-6 rounded-2xl  bg-white p-5 shadow-[0_4px_18px_rgba(15,23,42,0.06)] sm:p-6">
+
+                    <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                        <div className="min-w-0">
+                            <h2 className="text-lg font-bold leading-tight text-slate-800">
+                                {editingId
+                                    ? "Update Environment Data"
+                                    : "Add Environment Data"}
+                            </h2>
+
+                            <p className="mt-1 text-[10px] leading-relaxed text-slate-600">
+                                Enter environmental measurements for a city monitoring location.
+                            </p>
+                        </div>
+
+                        <div className="flex shrink-0 flex-wrap gap-2">
+                            <span className="w-fit whitespace-nowrap rounded-full bg-emerald-50 px-3 py-1 text-[9px] font-bold uppercase tracking-wider text-emerald-600">
+                                Sensor Data
+                            </span>
+
+                            {editingId && (
+                                <button
+                                    type="button"
+                                    onClick={resetForm}
+                                    className="shrink-0 whitespace-nowrap rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-[9px] font-bold text-slate-700 transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 hover:shadow-sm"
+                                >
+                                    Cancel Edit
+                                </button>
+                            )}
+                        </div>
+                    </div>
 
                     <form
                         onSubmit={handleSubmit}
                         className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
                     >
 
-                        <input
-                            type="text"
-                            name="location"
-                            placeholder="Location"
-                            value={formData.location}
-                            onChange={handleChange}
-                            required
-                            className="rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-green-500"
-                        />
+                        <div>
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
+                                Location
+                            </label>
+                            <input
+                                type="text"
+                                name="location"
+                                placeholder="e.g. Central Delhi"
+                                value={formData.location}
+                                onChange={handleChange}
+                                required
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 transition focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-100"
+                            />
+                        </div>
 
-                        <input
-                            type="number"
-                            name="aqi"
-                            placeholder="AQI"
-                            value={formData.aqi}
-                            onChange={handleChange}
-                            className="rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-green-500"
-                        />
+                        <div>
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
+                                AQI
+                            </label>
+                            <input
+                                type="number"
+                                name="aqi"
+                                placeholder="e.g. 85"
+                                value={formData.aqi}
+                                onChange={handleChange}
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 transition focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-100"
+                            />
+                        </div>
 
-                        <input
-                            type="number"
-                            name="pm25"
-                            placeholder="PM2.5"
-                            value={formData.pm25}
-                            onChange={handleChange}
-                            className="rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-green-500"
-                        />
+                        <div>
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
+                                PM2.5
+                            </label>
+                            <input
+                                type="number"
+                                name="pm25"
+                                placeholder="µg/m³"
+                                value={formData.pm25}
+                                onChange={handleChange}
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 transition focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-100"
+                            />
+                        </div>
 
-                        <input
-                            type="number"
-                            name="pm10"
-                            placeholder="PM10"
-                            value={formData.pm10}
-                            onChange={handleChange}
-                            className="rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-green-500"
-                        />
+                        <div>
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
+                                PM10
+                            </label>
+                            <input
+                                type="number"
+                                name="pm10"
+                                placeholder="µg/m³"
+                                value={formData.pm10}
+                                onChange={handleChange}
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 transition focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-100"
+                            />
+                        </div>
 
-                        <input
-                            type="number"
-                            name="co2"
-                            placeholder="CO₂"
-                            value={formData.co2}
-                            onChange={handleChange}
-                            className="rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-green-500"
-                        />
+                        <div>
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
+                                CO₂
+                            </label>
+                            <input
+                                type="number"
+                                name="co2"
+                                placeholder="ppm"
+                                value={formData.co2}
+                                onChange={handleChange}
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 transition focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-100"
+                            />
+                        </div>
 
-                        <input
-                            type="number"
-                            name="temperature"
-                            placeholder="Temperature °C"
-                            value={formData.temperature}
-                            onChange={handleChange}
-                            className="rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-green-500"
-                        />
+                        <div>
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
+                                Temperature
+                            </label>
+                            <input
+                                type="number"
+                                name="temperature"
+                                placeholder="°C"
+                                value={formData.temperature}
+                                onChange={handleChange}
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 transition focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-100"
+                            />
+                        </div>
 
-                        <input
-                            type="number"
-                            name="humidity"
-                            placeholder="Humidity %"
-                            value={formData.humidity}
-                            onChange={handleChange}
-                            className="rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-green-500"
-                        />
+                        <div>
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
+                                Humidity
+                            </label>
+                            <input
+                                type="number"
+                                name="humidity"
+                                placeholder="%"
+                                value={formData.humidity}
+                                onChange={handleChange}
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 transition focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-100"
+                            />
+                        </div>
 
-                        <input
-                            type="number"
-                            name="noise"
-                            placeholder="Noise dB"
-                            value={formData.noise}
-                            onChange={handleChange}
-                            className="rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-green-500"
-                        />
+                        <div>
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
+                                Noise
+                            </label>
+                            <input
+                                type="number"
+                                name="noise"
+                                placeholder="dB"
+                                value={formData.noise}
+                                onChange={handleChange}
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 transition focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-100"
+                            />
+                        </div>
 
-                        <div className="flex flex-col gap-3 sm:col-span-2 lg:col-span-4 sm:flex-row">
-
+                        <div className="flex flex-wrap gap-3 pt-2 sm:col-span-2 lg:col-span-4">
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="rounded-lg bg-green-600 px-5 py-3 font-semibold transition hover:bg-green-500 disabled:opacity-50"
+                                className="shrink-0 whitespace-nowrap rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:from-emerald-700 hover:to-teal-600 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50 active:translate-y-0"
                             >
                                 {loading
                                     ? "Saving..."
@@ -287,145 +443,196 @@ const EnvironmentManagement = () => {
                                     ? "Update Data"
                                     : "Add Data"}
                             </button>
-
-                            {editingId && (
-                                <button
-                                    type="button"
-                                    onClick={resetForm}
-                                    className="rounded-lg bg-slate-700 px-5 py-3 font-semibold transition hover:bg-slate-600"
-                                >
-                                    Cancel
-                                </button>
-                            )}
-
                         </div>
 
                     </form>
                 </div>
 
-                <div className="mt-8 rounded-2xl border border-slate-800 bg-slate-900 p-5 sm:p-6">
+                {/* RECORDS */}
+                <div className="overflow-hidden rounded-2xl  bg-white shadow-[0_4px_18px_rgba(15,23,42,0.06)]">
 
-                    <h2 className="mb-6 text-xl font-semibold">
-                        Environment Records
-                    </h2>
+                    <div className="flex flex-col gap-4 border-b border-slate-200 p-5 sm:flex-row sm:items-start sm:justify-between sm:p-6">
 
-                    <div className="overflow-x-auto">
+                        <div className="min-w-0">
+                            <h2 className="text-lg font-bold leading-tight text-slate-800">
+                                Environment Records
+                            </h2>
 
-                        <table className="w-full min-w-[900px] text-left">
+                            <p className="mt-1 text-[10px] leading-relaxed text-slate-600">
+                                Review environmental measurements from all registered sensors.
+                            </p>
+                        </div>
 
-                            <thead className="border-b border-slate-700 text-sm text-slate-400">
+                        <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
 
-                                <tr>
-                                    <th className="px-4 py-3">Location</th>
-                                    <th className="px-4 py-3">AQI</th>
-                                    <th className="px-4 py-3">PM2.5</th>
-                                    <th className="px-4 py-3">PM10</th>
-                                    <th className="px-4 py-3">CO₂</th>
-                                    <th className="px-4 py-3">Temp</th>
-                                    <th className="px-4 py-3">Humidity</th>
-                                    <th className="px-4 py-3">Noise</th>
-                                    <th className="px-4 py-3">Actions</th>
-                                </tr>
+                            <input
+                                type="text"
+                                placeholder="Search location..."
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-2.5 text-xs text-slate-800 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-100 sm:w-64"
+                                onChange={(e) => {
+                                    const value = e.target.value.toLowerCase();
 
-                            </thead>
+                                    document
+                                        .querySelectorAll("[data-environment-row]")
+                                        .forEach(row => {
+                                            row.style.display =
+                                                row.innerText
+                                                    .toLowerCase()
+                                                    .includes(value)
+                                                    ? ""
+                                                    : "none";
+                                        });
+                                }}
+                            />
 
-                            <tbody>
+                            <span className="w-fit shrink-0 whitespace-nowrap rounded-full bg-emerald-50 px-3 py-1 text-[9px] font-bold uppercase tracking-wider text-emerald-600">
+                                {environmentData.length} Total
+                            </span>
 
-                                {environmentData.length === 0 ? (
+                        </div>
 
+                    </div>
+
+                    {environmentData.length === 0 ? (
+                        <div className="p-10 text-center text-sm font-medium text-slate-600">
+                            No environment records found.
+                        </div>
+                    ) : (
+                        <div className="overflow-x-auto">
+
+                            <table className="w-full min-w-[1050px]">
+
+                                <thead className="bg-slate-100">
                                     <tr>
-                                        <td
-                                            colSpan="9"
-                                            className="px-4 py-8 text-center text-slate-500"
-                                        >
-                                            No environment records found
-                                        </td>
+
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
+                                            Location
+                                        </th>
+
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
+                                            AQI
+                                        </th>
+
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
+                                            PM2.5
+                                        </th>
+
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
+                                            PM10
+                                        </th>
+
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
+                                            CO₂
+                                        </th>
+
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
+                                            Temp
+                                        </th>
+
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
+                                            Humidity
+                                        </th>
+
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
+                                            Noise
+                                        </th>
+
+                                        <th className="px-4 py-3 text-right text-[9px] font-bold uppercase tracking-wider text-slate-600">
+                                            Actions
+                                        </th>
+
                                     </tr>
+                                </thead>
 
-                                ) : (
+                                <tbody>
 
-                                    environmentData.map((item) => (
-
+                                    {environmentData.map((item) => (
                                         <tr
                                             key={item._id}
-                                            className="border-b border-slate-800"
+                                            data-environment-row
+                                            className="border-t border-slate-200 transition-colors hover:bg-emerald-50/30"
                                         >
 
-                                            <td className="px-4 py-4">
+                                            <td className="px-4 py-4 text-xs font-bold text-slate-800">
                                                 {item.location}
                                             </td>
 
                                             <td className="px-4 py-4">
-                                                {item.aqi}
+                                                <span
+                                                    className={`inline-flex rounded-full px-2.5 py-1 text-[9px] font-bold ${
+                                                        Number(item.aqi) >= 200
+                                                            ? "bg-red-50 text-red-600"
+                                                            : Number(item.aqi) >= 150
+                                                                ? "bg-orange-50 text-orange-600"
+                                                                : Number(item.aqi) >= 100
+                                                                    ? "bg-amber-50 text-amber-600"
+                                                                    : "bg-emerald-50 text-emerald-600"
+                                                    }`}
+                                                >
+                                                    {item.aqi}
+                                                </span>
                                             </td>
 
-                                            <td className="px-4 py-4">
+                                            <td className="px-4 py-4 text-xs font-medium text-slate-700">
                                                 {item.pm25}
                                             </td>
 
-                                            <td className="px-4 py-4">
+                                            <td className="px-4 py-4 text-xs font-medium text-slate-700">
                                                 {item.pm10}
                                             </td>
 
-                                            <td className="px-4 py-4">
+                                            <td className="px-4 py-4 text-xs font-medium text-slate-700">
                                                 {item.co2}
                                             </td>
 
-                                            <td className="px-4 py-4">
+                                            <td className="px-4 py-4 text-xs font-medium text-slate-700">
                                                 {item.temperature} °C
                                             </td>
 
-                                            <td className="px-4 py-4">
+                                            <td className="px-4 py-4 text-xs font-medium text-slate-700">
                                                 {item.humidity}%
                                             </td>
 
-                                            <td className="px-4 py-4">
+                                            <td className="px-4 py-4 text-xs font-medium text-slate-700">
                                                 {item.noise} dB
                                             </td>
 
-                                            <td className="px-4 py-4">
-
-                                                <div className="flex gap-2">
+                                            <td className="px-4 py-4 text-right">
+                                                <div className="flex items-center justify-end gap-2">
 
                                                     <button
-                                                        onClick={() =>
-                                                            handleEdit(item)
-                                                        }
-                                                        className="rounded bg-blue-600 px-3 py-2 text-sm font-semibold hover:bg-blue-500"
+                                                        onClick={() => handleEdit(item)}
+                                                        className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-[9px] font-bold text-blue-600 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-500 hover:bg-blue-500 hover:text-white hover:shadow-md active:translate-y-0"
                                                     >
                                                         Edit
                                                     </button>
 
                                                     <button
-                                                        onClick={() =>
-                                                            handleDelete(item._id)
-                                                        }
-                                                        className="rounded bg-red-600 px-3 py-2 text-sm font-semibold hover:bg-red-500"
+                                                        onClick={() => handleDelete(item._id)}
+                                                        className="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-[9px] font-bold text-red-500 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-red-500 hover:bg-red-500 hover:text-white hover:shadow-md active:translate-y-0"
                                                     >
                                                         Delete
                                                     </button>
 
                                                 </div>
-
                                             </td>
 
                                         </tr>
+                                    ))}
 
-                                    ))
-                                )}
+                                </tbody>
 
-                            </tbody>
+                            </table>
 
-                        </table>
-
-                    </div>
+                        </div>
+                    )}
 
                 </div>
 
             </div>
-
         </div>
     );
+
 };
 
 export default EnvironmentManagement;

@@ -193,7 +193,7 @@ const VehiclesManagement = () => {
     // ACCESS CONTROL
     if (!user) {
         return (
-            <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center">
+            <div className="min-h-screen bg-slate-50 text-slate-900 flex items-center justify-center">
                 <p>Please login to continue.</p>
             </div>
         );
@@ -201,8 +201,8 @@ const VehiclesManagement = () => {
 
     if (!canManage) {
         return (
-            <div className="min-h-screen bg-slate-950 text-white p-6">
-                <div className="max-w-5xl mx-auto bg-slate-900 rounded-xl p-8">
+            <div className="min-h-screen bg-slate-50 text-slate-900 p-4 sm:p-6">
+                <div className="mx-auto w-full max-w-5xl rounded-xl bg-white p-8 shadow-sm">
                     <h1 className="text-3xl font-bold mb-4">
                         Vehicles Management
                     </h1>
@@ -216,55 +216,130 @@ const VehiclesManagement = () => {
     }
 
     return (
-        <div className="min-h-screen bg-slate-950 text-white p-4 sm:p-6">
-
-            <div className="max-w-7xl mx-auto">
+        <div className="min-h-screen bg-slate-50 p-4 sm:p-6">
+            <div className="mx-auto max-w-7xl">
 
                 {/* HEADER */}
-                <div className="mb-6">
-                    <h1 className="text-3xl sm:text-4xl font-bold">
-                        Vehicles Management
-                    </h1>
+                <div className="mb-6 overflow-hidden rounded-2xl border border-blue-200 bg-gradient-to-r from-blue-600 via-indigo-500 to-violet-600 p-6 text-white shadow-[0_10px_30px_rgba(37,99,235,0.15)]">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                        <div className="min-w-0">
+                            <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-blue-100">
+                                Fleet Monitoring
+                            </p>
 
-                    <p className="text-slate-400 mt-2">
-                        Add, update and remove city vehicles.
-                    </p>
+                            <h1 className="text-2xl font-bold leading-tight sm:text-3xl">
+                                Vehicles Management
+                            </h1>
+
+                            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-blue-100">
+                                Add, update and monitor city vehicles in real time.
+                            </p>
+                        </div>
+
+                        <span className="w-fit shrink-0 whitespace-nowrap rounded-full border border-emerald-200/40 bg-emerald-400/20 px-3 py-1.5 text-[9px] font-bold uppercase tracking-wider text-emerald-100">
+                            ● Fleet Active
+                        </span>
+                    </div>
                 </div>
 
-                {/* SUCCESS MESSAGE */}
+                {/* MESSAGES */}
                 {message && (
-                    <div className="mb-4 rounded-lg bg-green-900/40 border border-green-600 p-3 text-green-300">
+                    <div className="mb-5 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm font-medium text-emerald-700 shadow-sm">
                         {message}
                     </div>
                 )}
 
-                {/* ERROR MESSAGE */}
                 {error && (
-                    <div className="mb-4 rounded-lg bg-red-900/40 border border-red-600 p-3 text-red-300">
+                    <div className="mb-5 rounded-xl border border-red-200 bg-red-50 p-3 text-sm font-medium text-red-700 shadow-sm">
                         {error}
                     </div>
                 )}
 
-                {/* FORM */}
-                <div className="bg-slate-900 rounded-xl p-5 sm:p-6 mb-8">
+                {/* KPI CARDS */}
+                <div className="mb-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
 
-                    <h2 className="text-xl font-semibold mb-5">
-                        {editingId
-                            ? "Update Vehicle"
-                            : "Add Vehicle"}
-                    </h2>
+                    <div className="rounded-2xl  bg-white p-5 shadow-[0_4px_16px_rgba(15,23,42,0.06)]">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                            Total Vehicles
+                        </p>
+                        <p className="mt-2 text-2xl font-bold text-slate-800">
+                            {vehicles.length}
+                        </p>
+                        <p className="mt-1 text-[10px] font-medium text-blue-600">
+                            Registered fleet
+                        </p>
+                    </div>
+
+                    <div className="rounded-2xl  bg-white p-5 shadow-[0_4px_16px_rgba(15,23,42,0.06)]">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                            On Route
+                        </p>
+                        <p className="mt-2 text-2xl font-bold text-slate-800">
+                            {vehicles.filter(v => v.status === "ON_ROUTE").length}
+                        </p>
+                        <p className="mt-1 text-[10px] font-medium text-emerald-600">
+                            Currently active
+                        </p>
+                    </div>
+
+                    <div className="rounded-2xl  bg-white p-5 shadow-[0_4px_16px_rgba(15,23,42,0.06)]">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                            Emergency
+                        </p>
+                        <p className="mt-2 text-2xl font-bold text-slate-800">
+                            {vehicles.filter(v => v.status === "EMERGENCY").length}
+                        </p>
+                        <p className="mt-1 text-[10px] font-medium text-red-600">
+                            Requires attention
+                        </p>
+                    </div>
+
+                    <div className="rounded-2xl  bg-white p-5 shadow-[0_4px_16px_rgba(15,23,42,0.06)]">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                            Passengers
+                        </p>
+                        <p className="mt-2 text-2xl font-bold text-slate-800">
+                            {vehicles.reduce(
+                                (sum, vehicle) =>
+                                    sum + Number(vehicle.passengers || 0),
+                                0
+                            )}
+                        </p>
+                        <p className="mt-1 text-[10px] font-medium text-indigo-600">
+                            Current onboard count
+                        </p>
+                    </div>
+
+                </div>
+
+                {/* FORM */}
+                <div className="mb-6 rounded-2xl  bg-white p-5 shadow-[0_4px_18px_rgba(15,23,42,0.06)] sm:p-6">
+
+                    <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                        <div>
+                            <h2 className="text-lg font-bold leading-tight text-slate-800">
+                                {editingId ? "Update Vehicle" : "Add Vehicle Data"}
+                            </h2>
+
+                            <p className="mt-1 text-[10px] leading-relaxed text-slate-600">
+                                Enter vehicle information and location details.
+                            </p>
+                        </div>
+
+                        <span className="w-fit shrink-0 whitespace-nowrap rounded-full bg-blue-50 px-3 py-1 text-[9px] font-bold uppercase tracking-wider text-blue-600">
+                            Fleet Data
+                        </span>
+                    </div>
 
                     <form
                         onSubmit={handleSubmit}
-                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+                        className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
                     >
 
-                        {/* VEHICLE ID */}
                         <div>
-                            <label className="block text-sm text-slate-400 mb-1">
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
                                 Vehicle ID
                             </label>
-
                             <input
                                 type="text"
                                 name="vehicleId"
@@ -272,58 +347,46 @@ const VehiclesManagement = () => {
                                 onChange={handleChange}
                                 placeholder="BUS-001"
                                 required
-                                className="w-full rounded-lg bg-slate-800 border border-slate-700 px-3 py-2 outline-none focus:border-blue-500"
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
                             />
                         </div>
 
-                        {/* TYPE */}
                         <div>
-                            <label className="block text-sm text-slate-400 mb-1">
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
                                 Vehicle Type
                             </label>
-
                             <select
                                 name="type"
                                 value={form.type}
                                 onChange={handleChange}
-                                className="w-full rounded-lg bg-slate-800 border border-slate-700 px-3 py-2 outline-none focus:border-blue-500"
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
                             >
                                 <option value="BUS">BUS</option>
-                                <option value="AMBULANCE">
-                                    AMBULANCE
-                                </option>
-                                <option value="FIRE_TRUCK">
-                                    FIRE TRUCK
-                                </option>
-                                <option value="POLICE">
-                                    POLICE
-                                </option>
+                                <option value="AMBULANCE">AMBULANCE</option>
+                                <option value="FIRE_TRUCK">FIRE TRUCK</option>
+                                <option value="POLICE">POLICE</option>
                                 <option value="EV">EV</option>
                             </select>
                         </div>
 
-                        {/* ROUTE */}
                         <div>
-                            <label className="block text-sm text-slate-400 mb-1">
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
                                 Route
                             </label>
-
                             <input
                                 type="text"
                                 name="route"
                                 value={form.route}
                                 onChange={handleChange}
                                 placeholder="Route A"
-                                className="w-full rounded-lg bg-slate-800 border border-slate-700 px-3 py-2 outline-none focus:border-blue-500"
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
                             />
                         </div>
 
-                        {/* SPEED */}
                         <div>
-                            <label className="block text-sm text-slate-400 mb-1">
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
                                 Speed
                             </label>
-
                             <input
                                 type="number"
                                 step="any"
@@ -333,16 +396,14 @@ const VehiclesManagement = () => {
                                 placeholder="45"
                                 min="0"
                                 required
-                                className="w-full rounded-lg bg-slate-800 border border-slate-700 px-3 py-2 outline-none focus:border-blue-500"
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
                             />
                         </div>
 
-                        {/* PASSENGERS */}
                         <div>
-                            <label className="block text-sm text-slate-400 mb-1">
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
                                 Passengers
                             </label>
-
                             <input
                                 type="number"
                                 name="passengers"
@@ -351,118 +412,126 @@ const VehiclesManagement = () => {
                                 placeholder="40"
                                 min="0"
                                 required
-                                className="w-full rounded-lg bg-slate-800 border border-slate-700 px-3 py-2 outline-none focus:border-blue-500"
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
                             />
                         </div>
 
-                        {/* STATUS */}
                         <div>
-                            <label className="block text-sm text-slate-400 mb-1">
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
                                 Status
                             </label>
-
                             <select
                                 name="status"
                                 value={form.status}
                                 onChange={handleChange}
-                                className="w-full rounded-lg bg-slate-800 border border-slate-700 px-3 py-2 outline-none focus:border-blue-500"
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
                             >
-                                <option value="ON_ROUTE">
-                                    ON ROUTE
-                                </option>
-
-                                <option value="IDLE">
-                                    IDLE
-                                </option>
-
-                                <option value="EMERGENCY">
-                                    EMERGENCY
-                                </option>
-
-                                <option value="OFFLINE">
-                                    OFFLINE
-                                </option>
+                                <option value="ON_ROUTE">ON ROUTE</option>
+                                <option value="IDLE">IDLE</option>
+                                <option value="EMERGENCY">EMERGENCY</option>
+                                <option value="OFFLINE">OFFLINE</option>
                             </select>
                         </div>
 
-                        {/* LATITUDE */}
                         <div>
-                            <label className="block text-sm text-slate-400 mb-1">
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
                                 Latitude
                             </label>
-
                             <input
                                 type="number"
                                 step="any"
                                 name="lat"
                                 value={form.lat}
                                 onChange={handleChange}
-                                placeholder="26.8467"
+                                placeholder="28.6139"
                                 required
-                                className="w-full rounded-lg bg-slate-800 border border-slate-700 px-3 py-2 outline-none focus:border-blue-500"
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
                             />
                         </div>
 
-                        {/* LONGITUDE */}
                         <div>
-                            <label className="block text-sm text-slate-400 mb-1">
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
                                 Longitude
                             </label>
-
                             <input
                                 type="number"
                                 step="any"
                                 name="lng"
                                 value={form.lng}
                                 onChange={handleChange}
-                                placeholder="80.9462"
+                                placeholder="77.2090"
                                 required
-                                className="w-full rounded-lg bg-slate-800 border border-slate-700 px-3 py-2 outline-none focus:border-blue-500"
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
                             />
                         </div>
 
-                        {/* BUTTONS */}
-                        <div className="sm:col-span-2 lg:col-span-4 flex flex-wrap gap-3 mt-2">
-
+                        <div className="flex flex-wrap gap-3 pt-2 sm:col-span-2 lg:col-span-4">
                             <button
                                 type="submit"
-                                className="rounded-lg bg-blue-600 px-5 py-2.5 font-medium hover:bg-blue-700 transition"
+                                className="shrink-0 whitespace-nowrap rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:from-blue-700 hover:to-indigo-700 hover:shadow-md active:translate-y-0"
                             >
-                                {editingId
-                                    ? "Update Vehicle"
-                                    : "Add Vehicle"}
+                                {editingId ? "Update Vehicle" : "Add Vehicle"}
                             </button>
 
                             {editingId && (
                                 <button
                                     type="button"
                                     onClick={resetForm}
-                                    className="rounded-lg bg-slate-700 px-5 py-2.5 font-medium hover:bg-slate-600 transition"
+                                    className="shrink-0 whitespace-nowrap rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 hover:shadow-sm active:translate-y-0"
                                 >
                                     Cancel
                                 </button>
                             )}
-
                         </div>
 
                     </form>
                 </div>
 
-                {/* VEHICLE TABLE */}
-                <div className="bg-slate-900 rounded-xl overflow-hidden">
+                {/* VEHICLE RECORDS */}
+                <div className="overflow-hidden rounded-2xl  bg-white shadow-[0_4px_18px_rgba(15,23,42,0.06)]">
 
-                    <div className="p-5 border-b border-slate-800">
-                        <h2 className="text-xl font-semibold">
-                            Vehicle Records
-                        </h2>
+                    <div className="flex flex-col gap-4 border-b border-slate-200 p-5 sm:flex-row sm:items-start sm:justify-between sm:p-6">
+
+                        <div className="min-w-0">
+                            <h2 className="text-lg font-bold leading-tight text-slate-800">
+                                Vehicle Records
+                            </h2>
+                            <p className="mt-1 text-[10px] leading-relaxed text-slate-600">
+                                Monitor registered vehicles, status and current locations.
+                            </p>
+                        </div>
+
+                        <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+                            <div className="w-full sm:w-64">
+                                <input
+                                    type="text"
+                                    placeholder="Search vehicle..."
+                                    className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-2.5 text-xs text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
+                                    onChange={(e) => {
+                                        const value = e.target.value.toLowerCase();
+                                        document
+                                            .querySelectorAll("[data-vehicle-row]")
+                                            .forEach(row => {
+                                                row.style.display =
+                                                    row.innerText
+                                                        .toLowerCase()
+                                                        .includes(value)
+                                                        ? ""
+                                                        : "none";
+                                            });
+                                    }}
+                                />
+                            </div>
+                        </div>
+
                     </div>
 
                     {loading ? (
-                        <div className="p-8 text-center text-slate-400">
+                        <div className="p-10 text-center text-sm font-medium text-slate-600">
                             Loading vehicles...
                         </div>
                     ) : vehicles.length === 0 ? (
-                        <div className="p-8 text-center text-slate-400">
+                        <div className="p-10 text-center text-sm font-medium text-slate-600">
                             No vehicles found.
                         </div>
                     ) : (
@@ -470,114 +539,106 @@ const VehiclesManagement = () => {
 
                             <table className="w-full min-w-[1100px]">
 
-                                <thead className="bg-slate-800">
-
+                                <thead className="bg-slate-100">
                                     <tr>
-                                        <th className="text-left px-4 py-3">
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
                                             Vehicle ID
                                         </th>
-
-                                        <th className="text-left px-4 py-3">
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
                                             Type
                                         </th>
-
-                                        <th className="text-left px-4 py-3">
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
                                             Route
                                         </th>
-
-                                        <th className="text-left px-4 py-3">
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
                                             Speed
                                         </th>
-
-                                        <th className="text-left px-4 py-3">
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
                                             Passengers
                                         </th>
-
-                                        <th className="text-left px-4 py-3">
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
                                             Status
                                         </th>
-
-                                        <th className="text-left px-4 py-3">
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
                                             Location
                                         </th>
-
-                                        <th className="text-left px-4 py-3">
+                                        <th className="px-4 py-3 text-right text-[9px] font-bold uppercase tracking-wider text-slate-600">
                                             Actions
                                         </th>
                                     </tr>
-
                                 </thead>
 
                                 <tbody>
-
                                     {vehicles.map((vehicle) => (
                                         <tr
                                             key={vehicle._id}
-                                            className="border-t border-slate-800 hover:bg-slate-800/50"
+                                            data-vehicle-row
+                                            className="border-t border-slate-200 transition-colors hover:bg-blue-50/40"
                                         >
 
-                                            <td className="px-4 py-3 font-medium">
+                                            <td className="px-4 py-4 text-sm font-bold text-slate-800">
                                                 {vehicle.vehicleId}
                                             </td>
 
-                                            <td className="px-4 py-3">
+                                            <td className="px-4 py-4 text-xs font-semibold text-slate-700">
                                                 {vehicle.type}
                                             </td>
 
-                                            <td className="px-4 py-3">
+                                            <td className="px-4 py-4 text-xs text-slate-700">
                                                 {vehicle.route || "-"}
                                             </td>
 
-                                            <td className="px-4 py-3">
+                                            <td className="px-4 py-4 text-xs font-semibold text-slate-700">
                                                 {vehicle.speed}
                                             </td>
 
-                                            <td className="px-4 py-3">
+                                            <td className="px-4 py-4 text-xs font-semibold text-slate-700">
                                                 {vehicle.passengers}
                                             </td>
 
-                                            <td className="px-4 py-3">
-                                                <span className="px-2 py-1 rounded text-xs font-semibold bg-blue-900 text-blue-300">
+                                            <td className="px-4 py-4">
+                                                <span
+                                                    className={`inline-flex rounded-full px-2.5 py-1 text-[9px] font-bold ${
+                                                        vehicle.status === "EMERGENCY"
+                                                            ? "bg-red-50 text-red-600"
+                                                            : vehicle.status === "ON_ROUTE"
+                                                                ? "bg-emerald-50 text-emerald-600"
+                                                                : vehicle.status === "IDLE"
+                                                                    ? "bg-amber-50 text-amber-600"
+                                                                    : "bg-slate-100 text-slate-600"
+                                                    }`}
+                                                >
                                                     {vehicle.status}
                                                 </span>
                                             </td>
 
-                                            <td className="px-4 py-3">
+                                            <td className="px-4 py-4 text-xs font-medium text-slate-600">
                                                 {vehicle.location?.lat},{" "}
                                                 {vehicle.location?.lng}
                                             </td>
 
-                                            <td className="px-4 py-3">
-
-                                                <div className="flex gap-2">
+                                            <td className="px-4 py-4 text-right">
+                                                <div className="flex items-center justify-end gap-2">
 
                                                     <button
-                                                        onClick={() =>
-                                                            handleEdit(vehicle)
-                                                        }
-                                                        className="rounded-lg bg-yellow-600 px-3 py-1.5 text-sm hover:bg-yellow-700"
+                                                        onClick={() => handleEdit(vehicle)}
+                                                        className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-[9px] font-bold text-blue-600 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-500 hover:bg-blue-500 hover:text-white hover:shadow-md active:translate-y-0"
                                                     >
                                                         Edit
                                                     </button>
 
                                                     <button
-                                                        onClick={() =>
-                                                            handleDelete(
-                                                                vehicle._id
-                                                            )
-                                                        }
-                                                        className="rounded-lg bg-red-600 px-3 py-1.5 text-sm hover:bg-red-700"
+                                                        onClick={() => handleDelete(vehicle._id)}
+                                                        className="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-[9px] font-bold text-red-500 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-red-500 hover:bg-red-500 hover:text-white hover:shadow-md active:translate-y-0"
                                                     >
                                                         Delete
                                                     </button>
 
                                                 </div>
-
                                             </td>
 
                                         </tr>
                                     ))}
-
                                 </tbody>
 
                             </table>
@@ -588,9 +649,9 @@ const VehiclesManagement = () => {
                 </div>
 
             </div>
-
         </div>
     );
+
 };
 
 export default VehiclesManagement;

@@ -179,99 +179,262 @@ const EnergyManagement = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-950 p-4 text-white sm:p-6 lg:p-8">
+        <div className="min-h-screen w-full overflow-x-hidden bg-slate-50 p-3 sm:p-5 lg:p-6">
+            <div className="mx-auto w-full max-w-7xl min-w-0">
 
-            <div className="mx-auto max-w-7xl">
+                {/* HEADER */}
+                <div className="mb-6 overflow-hidden rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-500 p-6 text-white shadow-[0_10px_30px_rgba(245,158,11,0.15)]">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                        <div className="min-w-0">
+                            <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-amber-100">
+                                Smart Energy Monitoring
+                            </p>
 
-                <h1 className="mb-8 text-3xl font-bold sm:text-4xl">
-                    Energy Management
-                </h1>
+                            <h1 className="text-2xl font-bold leading-tight sm:text-3xl">
+                                Energy Management
+                            </h1>
 
-                <div className="rounded-2xl border border-slate-800 bg-slate-900 p-5 sm:p-6">
+                            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-amber-100">
+                                Monitor electricity consumption, sector usage and renewable energy across the city.
+                            </p>
+                        </div>
 
-                    <h2 className="mb-6 text-xl font-semibold">
-                        {editingId
-                            ? "Update Energy Data"
-                            : "Add Energy Data"}
-                    </h2>
+                        <span className="w-fit shrink-0 whitespace-nowrap rounded-full border border-white/30 bg-white/15 px-3 py-1.5 text-[9px] font-bold uppercase tracking-wider text-white backdrop-blur">
+                            ● Energy Active
+                        </span>
+                    </div>
+                </div>
+
+                {/* KPI CARDS */}
+                <div className="mb-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+
+                    <div className="rounded-2xl  bg-white p-5 shadow-[0_4px_16px_rgba(15,23,42,0.06)] transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                            Energy Points
+                        </p>
+
+                        <p className="mt-2 text-2xl font-bold text-slate-800">
+                            {energyData.length}
+                        </p>
+
+                        <p className="mt-1 text-[10px] font-medium text-amber-600">
+                            Registered locations
+                        </p>
+                    </div>
+
+                    <div className="rounded-2xl  bg-white p-5 shadow-[0_4px_16px_rgba(15,23,42,0.06)] transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                            Total Consumption
+                        </p>
+
+                        <p className="mt-2 text-2xl font-bold text-slate-800">
+                            {energyData
+                                .reduce(
+                                    (sum, item) =>
+                                        sum + Number(item.consumption || 0),
+                                    0
+                                )
+                                .toLocaleString()}
+                        </p>
+
+                        <p className="mt-1 text-[10px] font-medium text-orange-600">
+                            Recorded energy usage
+                        </p>
+                    </div>
+
+                    <div className="rounded-2xl  bg-white p-5 shadow-[0_4px_16px_rgba(15,23,42,0.06)] transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                            Renewable Share
+                        </p>
+
+                        <p className="mt-2 text-2xl font-bold text-slate-800">
+                            {energyData.length
+                                ? (
+                                    energyData.reduce(
+                                        (sum, item) =>
+                                            sum +
+                                            Number(
+                                                item.renewablePercentage || 0
+                                            ),
+                                        0
+                                    ) / energyData.length
+                                ).toFixed(1)
+                                : "0.0"}%
+                        </p>
+
+                        <p className="mt-1 text-[10px] font-medium text-emerald-600">
+                            Average renewable energy
+                        </p>
+                    </div>
+
+                    <div className="rounded-2xl  bg-white p-5 shadow-[0_4px_16px_rgba(15,23,42,0.06)] transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                            Active Locations
+                        </p>
+
+                        <p className="mt-2 text-2xl font-bold text-slate-800">
+                            {energyData.length}
+                        </p>
+
+                        <p className="mt-1 text-[10px] font-medium text-blue-600">
+                            Monitoring energy usage
+                        </p>
+                    </div>
+
+                </div>
+
+                {/* FORM */}
+                <div className="mb-6 rounded-2xl  bg-white p-5 shadow-[0_4px_18px_rgba(15,23,42,0.06)] sm:p-6">
+
+                    <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                        <div className="min-w-0">
+                            <h2 className="text-lg font-bold leading-tight text-slate-800">
+                                {editingId
+                                    ? "Update Energy Data"
+                                    : "Add Energy Data"}
+                            </h2>
+
+                            <p className="mt-1 text-[10px] leading-relaxed text-slate-600">
+                                Enter electricity consumption and renewable energy information for a location.
+                            </p>
+                        </div>
+
+                        <div className="flex shrink-0 flex-wrap gap-2">
+                            <span className="w-fit whitespace-nowrap rounded-full bg-amber-50 px-3 py-1 text-[9px] font-bold uppercase tracking-wider text-amber-600">
+                                Energy Data
+                            </span>
+
+                            {editingId && (
+                                <button
+                                    type="button"
+                                    onClick={resetForm}
+                                    className="shrink-0 whitespace-nowrap rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-[9px] font-bold text-slate-700 transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 hover:shadow-sm"
+                                >
+                                    Cancel Edit
+                                </button>
+                            )}
+                        </div>
+                    </div>
 
                     <form
                         onSubmit={handleSubmit}
                         className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
                     >
 
-                        <input
-                            type="text"
-                            name="location"
-                            placeholder="Location"
-                            value={formData.location}
-                            onChange={handleChange}
-                            required
-                            className="rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-green-500"
-                        />
+                        <div>
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
+                                Location
+                            </label>
 
-                        <input
-                            type="number"
-                            name="consumption"
-                            placeholder="Total Consumption"
-                            value={formData.consumption}
-                            onChange={handleChange}
-                            className="rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-green-500"
-                        />
+                            <input
+                                type="text"
+                                name="location"
+                                placeholder="e.g. Central Delhi"
+                                value={formData.location}
+                                onChange={handleChange}
+                                required
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 transition focus:border-amber-500 focus:bg-white focus:ring-2 focus:ring-amber-100"
+                            />
+                        </div>
 
-                        <input
-                            type="number"
-                            name="residential"
-                            placeholder="Residential"
-                            value={formData.residential}
-                            onChange={handleChange}
-                            className="rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-green-500"
-                        />
+                        <div>
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
+                                Total Consumption
+                            </label>
 
-                        <input
-                            type="number"
-                            name="commercial"
-                            placeholder="Commercial"
-                            value={formData.commercial}
-                            onChange={handleChange}
-                            className="rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-green-500"
-                        />
+                            <input
+                                type="number"
+                                name="consumption"
+                                placeholder="e.g. 5200"
+                                value={formData.consumption}
+                                onChange={handleChange}
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 transition focus:border-amber-500 focus:bg-white focus:ring-2 focus:ring-amber-100"
+                            />
+                        </div>
 
-                        <input
-                            type="number"
-                            name="industrial"
-                            placeholder="Industrial"
-                            value={formData.industrial}
-                            onChange={handleChange}
-                            className="rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-green-500"
-                        />
+                        <div>
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
+                                Residential
+                            </label>
 
-                        <input
-                            type="number"
-                            name="public"
-                            placeholder="Public"
-                            value={formData.public}
-                            onChange={handleChange}
-                            className="rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-green-500"
-                        />
+                            <input
+                                type="number"
+                                name="residential"
+                                placeholder="Residential usage"
+                                value={formData.residential}
+                                onChange={handleChange}
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 transition focus:border-amber-500 focus:bg-white focus:ring-2 focus:ring-amber-100"
+                            />
+                        </div>
 
-                        <input
-                            type="number"
-                            name="renewablePercentage"
-                            placeholder="Renewable %"
-                            value={formData.renewablePercentage}
-                            onChange={handleChange}
-                            min="0"
-                            max="100"
-                            className="rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-green-500"
-                        />
+                        <div>
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
+                                Commercial
+                            </label>
 
-                        <div className="flex flex-col gap-3 sm:col-span-2 lg:col-span-4 sm:flex-row">
+                            <input
+                                type="number"
+                                name="commercial"
+                                placeholder="Commercial usage"
+                                value={formData.commercial}
+                                onChange={handleChange}
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 transition focus:border-amber-500 focus:bg-white focus:ring-2 focus:ring-amber-100"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
+                                Industrial
+                            </label>
+
+                            <input
+                                type="number"
+                                name="industrial"
+                                placeholder="Industrial usage"
+                                value={formData.industrial}
+                                onChange={handleChange}
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 transition focus:border-amber-500 focus:bg-white focus:ring-2 focus:ring-amber-100"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
+                                Public
+                            </label>
+
+                            <input
+                                type="number"
+                                name="public"
+                                placeholder="Public usage"
+                                value={formData.public}
+                                onChange={handleChange}
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 transition focus:border-amber-500 focus:bg-white focus:ring-2 focus:ring-amber-100"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
+                                Renewable %
+                            </label>
+
+                            <input
+                                type="number"
+                                name="renewablePercentage"
+                                placeholder="0 - 100"
+                                value={formData.renewablePercentage}
+                                onChange={handleChange}
+                                min="0"
+                                max="100"
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 transition focus:border-amber-500 focus:bg-white focus:ring-2 focus:ring-amber-100"
+                            />
+                        </div>
+
+                        <div className="flex flex-wrap items-end gap-3 sm:col-span-2 lg:col-span-4">
 
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="rounded-lg bg-green-600 px-5 py-3 font-semibold transition hover:bg-green-500 disabled:opacity-50"
+                                className="shrink-0 whitespace-nowrap rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:from-amber-600 hover:to-orange-600 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50 active:translate-y-0"
                             >
                                 {loading
                                     ? "Saving..."
@@ -280,139 +443,188 @@ const EnergyManagement = () => {
                                     : "Add Data"}
                             </button>
 
-                            {editingId && (
-                                <button
-                                    type="button"
-                                    onClick={resetForm}
-                                    className="rounded-lg bg-slate-700 px-5 py-3 font-semibold transition hover:bg-slate-600"
-                                >
-                                    Cancel
-                                </button>
-                            )}
-
                         </div>
 
                     </form>
                 </div>
 
-                <div className="mt-8 rounded-2xl border border-slate-800 bg-slate-900 p-5 sm:p-6">
+                {/* RECORDS */}
+                <div className="overflow-hidden rounded-2xl  bg-white shadow-[0_4px_18px_rgba(15,23,42,0.06)]">
 
-                    <h2 className="mb-6 text-xl font-semibold">
-                        Energy Records
-                    </h2>
+                    <div className="flex flex-col gap-4 border-b border-slate-200 p-5 sm:flex-row sm:items-start sm:justify-between sm:p-6">
 
-                    <div className="overflow-x-auto">
+                        <div className="min-w-0">
+                            <h2 className="text-lg font-bold leading-tight text-slate-800">
+                                Energy Records
+                            </h2>
 
-                        <table className="w-full min-w-[850px] text-left">
+                            <p className="mt-1 text-[10px] leading-relaxed text-slate-600">
+                                Review energy consumption by location and sector.
+                            </p>
+                        </div>
 
-                            <thead className="border-b border-slate-700 text-sm text-slate-400">
+                        <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
 
-                                <tr>
-                                    <th className="px-4 py-3">Location</th>
-                                    <th className="px-4 py-3">Consumption</th>
-                                    <th className="px-4 py-3">Residential</th>
-                                    <th className="px-4 py-3">Commercial</th>
-                                    <th className="px-4 py-3">Industrial</th>
-                                    <th className="px-4 py-3">Public</th>
-                                    <th className="px-4 py-3">Renewable %</th>
-                                    <th className="px-4 py-3">Actions</th>
-                                </tr>
+                            <input
+                                type="text"
+                                placeholder="Search location..."
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-2.5 text-xs text-slate-800 outline-none transition focus:border-amber-500 focus:bg-white focus:ring-2 focus:ring-amber-100 sm:w-64"
+                                onChange={(e) => {
+                                    const value = e.target.value.toLowerCase();
 
-                            </thead>
+                                    document
+                                        .querySelectorAll("[data-energy-row]")
+                                        .forEach(row => {
+                                            row.style.display =
+                                                row.innerText
+                                                    .toLowerCase()
+                                                    .includes(value)
+                                                    ? ""
+                                                    : "none";
+                                        });
+                                }}
+                            />
 
-                            <tbody>
+                            <span className="w-fit shrink-0 whitespace-nowrap rounded-full bg-amber-50 px-3 py-1 text-[9px] font-bold uppercase tracking-wider text-amber-600">
+                                {energyData.length} Total
+                            </span>
 
-                                {energyData.length === 0 ? (
+                        </div>
 
+                    </div>
+
+                    {energyData.length === 0 ? (
+                        <div className="p-10 text-center text-sm font-medium text-slate-600">
+                            No energy records found.
+                        </div>
+                    ) : (
+                        <div className="overflow-x-auto">
+
+                            <table className="w-full min-w-[1050px]">
+
+                                <thead className="bg-slate-100">
                                     <tr>
-                                        <td
-                                            colSpan="8"
-                                            className="px-4 py-8 text-center text-slate-500"
-                                        >
-                                            No energy records found
-                                        </td>
+
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
+                                            Location
+                                        </th>
+
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
+                                            Consumption
+                                        </th>
+
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
+                                            Residential
+                                        </th>
+
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
+                                            Commercial
+                                        </th>
+
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
+                                            Industrial
+                                        </th>
+
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
+                                            Public
+                                        </th>
+
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
+                                            Renewable %
+                                        </th>
+
+                                        <th className="px-4 py-3 text-right text-[9px] font-bold uppercase tracking-wider text-slate-600">
+                                            Actions
+                                        </th>
+
                                     </tr>
+                                </thead>
 
-                                ) : (
+                                <tbody>
 
-                                    energyData.map((item) => (
-
+                                    {energyData.map((item) => (
                                         <tr
                                             key={item._id}
-                                            className="border-b border-slate-800"
+                                            data-energy-row
+                                            className="border-t border-slate-200 transition-colors hover:bg-amber-50/30"
                                         >
 
-                                            <td className="px-4 py-4">
+                                            <td className="px-4 py-4 text-xs font-bold text-slate-800">
                                                 {item.location}
                                             </td>
 
                                             <td className="px-4 py-4">
-                                                {item.consumption}
+                                                <span className="inline-flex rounded-full bg-orange-50 px-2.5 py-1 text-[9px] font-bold text-orange-600">
+                                                    {item.consumption}
+                                                </span>
                                             </td>
 
-                                            <td className="px-4 py-4">
+                                            <td className="px-4 py-4 text-xs font-medium text-slate-700">
                                                 {item.residential}
                                             </td>
 
-                                            <td className="px-4 py-4">
+                                            <td className="px-4 py-4 text-xs font-medium text-slate-700">
                                                 {item.commercial}
                                             </td>
 
-                                            <td className="px-4 py-4">
+                                            <td className="px-4 py-4 text-xs font-medium text-slate-700">
                                                 {item.industrial}
                                             </td>
 
-                                            <td className="px-4 py-4">
+                                            <td className="px-4 py-4 text-xs font-medium text-slate-700">
                                                 {item.public}
                                             </td>
 
                                             <td className="px-4 py-4">
-                                                {item.renewablePercentage}%
+                                                <span
+                                                    className={`inline-flex rounded-full px-2.5 py-1 text-[9px] font-bold ${
+                                                        Number(item.renewablePercentage) >= 50
+                                                            ? "bg-emerald-50 text-emerald-600"
+                                                            : Number(item.renewablePercentage) >= 25
+                                                                ? "bg-amber-50 text-amber-600"
+                                                                : "bg-slate-100 text-slate-600"
+                                                    }`}
+                                                >
+                                                    {item.renewablePercentage}%
+                                                </span>
                                             </td>
 
-                                            <td className="px-4 py-4">
-
-                                                <div className="flex gap-2">
+                                            <td className="px-4 py-4 text-right">
+                                                <div className="flex items-center justify-end gap-2">
 
                                                     <button
-                                                        onClick={() =>
-                                                            handleEdit(item)
-                                                        }
-                                                        className="rounded bg-blue-600 px-3 py-2 text-sm font-semibold hover:bg-blue-500"
+                                                        onClick={() => handleEdit(item)}
+                                                        className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-[9px] font-bold text-blue-600 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-500 hover:bg-blue-500 hover:text-white hover:shadow-md active:translate-y-0"
                                                     >
                                                         Edit
                                                     </button>
 
                                                     <button
-                                                        onClick={() =>
-                                                            handleDelete(item._id)
-                                                        }
-                                                        className="rounded bg-red-600 px-3 py-2 text-sm font-semibold hover:bg-red-500"
+                                                        onClick={() => handleDelete(item._id)}
+                                                        className="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-[9px] font-bold text-red-500 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-red-500 hover:bg-red-500 hover:text-white hover:shadow-md active:translate-y-0"
                                                     >
                                                         Delete
                                                     </button>
 
                                                 </div>
-
                                             </td>
 
                                         </tr>
+                                    ))}
 
-                                    ))
-                                )}
+                                </tbody>
 
-                            </tbody>
+                            </table>
 
-                        </table>
-
-                    </div>
+                        </div>
+                    )}
 
                 </div>
 
             </div>
-
         </div>
     );
+
 };
 
 export default EnergyManagement;

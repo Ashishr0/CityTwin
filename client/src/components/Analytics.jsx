@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import {
     LineChart,
     Line,
@@ -53,13 +55,13 @@ function ChartCard({
     dualAxis = false
 }) {
     return (
-        <div className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md">
+        <div className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_2px_10px_rgba(15,23,42,0.04)] transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-[0_12px_30px_rgba(37,99,235,0.10)]">
 
             <div className="flex items-start justify-between gap-4">
 
                 <div className="flex items-start gap-3">
 
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-50 text-lg">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-100 bg-slate-50 text-lg transition-transform duration-300 group-hover:scale-110 group-hover:bg-blue-50">
                         {icon}
                     </div>
 
@@ -75,18 +77,18 @@ function ChartCard({
 
                 </div>
 
-                <div className="text-right">
+                <div className="min-w-[90px] shrink-0 pr-2 text-right">
 
-                    <p className="text-xl font-bold text-slate-900">
+                    <p className="text-xl font-bold tracking-tight text-slate-900 transition-colors group-hover:text-blue-600">
                         {value}
                         <span className="ml-1 text-xs font-medium text-slate-400">
                             {unit}
                         </span>
                     </p>
 
-                    <div className="mt-1 flex items-center justify-end gap-1.5">
+                    <div className="mt-1 ml-auto flex w-fit items-center justify-end gap-1.5 rounded-full bg-emerald-50 px-2 py-1">
 
-                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
 
                         <span className="text-[10px] font-semibold text-emerald-600">
                             LIVE
@@ -99,7 +101,7 @@ function ChartCard({
             </div>
 
 
-            <div className="mt-5 h-[230px] w-full">
+            <div className="mt-4 h-[180px] w-full">
 
                 <ResponsiveContainer
                     width="100%"
@@ -109,8 +111,8 @@ function ChartCard({
                     <LineChart
                         data={data}
                         margin={{
-                            top: 5,
-                            right: 8,
+                            top: 4,
+                            right: 6,
                             left: -20,
                             bottom: 0
                         }}
@@ -199,7 +201,7 @@ function ChartCard({
             </div>
 
 
-            <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-slate-100 pt-3">
+            <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-slate-100 pt-3">
 
                 {lines.map((line) => (
 
@@ -235,8 +237,14 @@ const Analytics = () => {
         connected
     } = useCity();
 
+    const [paused, setPaused] = useState(false);
 
-    const chartData = history.map(
+
+    const visibleHistory = paused
+        ? history.slice(0, history.length)
+        : history;
+
+    const chartData = visibleHistory.map(
         (item) => ({
             ...item,
             time: formatTime(item.timestamp)
@@ -294,7 +302,7 @@ const Analytics = () => {
 
                         <div>
 
-                            <h2 className="text-xl font-bold text-slate-900">
+                            <h2 className="text-xl font-bold tracking-tight text-slate-900 transition-colors group-hover:text-blue-600">
                                 City Analytics
                             </h2>
 
@@ -309,21 +317,36 @@ const Analytics = () => {
                 </div>
 
 
-                <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2 shadow-sm">
+                <div className="flex flex-wrap items-center gap-2">
 
-                    <span
-                        className={`h-2 w-2 rounded-full ${
-                            connected
-                                ? "bg-emerald-500"
-                                : "bg-red-500"
+                    <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2 shadow-sm">
+
+                        <span
+                            className={`h-2 w-2 rounded-full ${
+                                connected
+                                    ? "bg-emerald-500"
+                                    : "bg-red-500"
+                            }`}
+                        />
+
+                        <span className="text-xs font-semibold text-slate-600">
+                            {connected
+                                ? "Live monitoring"
+                                : "Connection lost"}
+                        </span>
+
+                    </div>
+
+                    <button
+                        onClick={() => setPaused(previous => !previous)}
+                        className={`rounded-full border px-3 py-2 text-xs font-bold transition ${
+                            paused
+                                ? "border-orange-200 bg-orange-50 text-orange-600 hover:bg-orange-100"
+                                : "border-emerald-200 bg-emerald-50 text-emerald-600 hover:bg-emerald-100"
                         }`}
-                    />
-
-                    <span className="text-xs font-semibold text-slate-600">
-                        {connected
-                            ? "Live monitoring"
-                            : "Connection lost"}
-                    </span>
+                    >
+                        {paused ? "▶ Resume" : "⏸ Pause"}
+                    </button>
 
                 </div>
 
@@ -406,7 +429,7 @@ const Analytics = () => {
 
             {/* Charts */}
 
-            <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
+            <div className="grid grid-cols-1 gap-x-6 gap-y-8 xl:grid-cols-2">
 
 
                 <ChartCard
@@ -534,7 +557,9 @@ const Analytics = () => {
                 </span>
 
                 <span>
-                    Updates every 3 seconds
+                    {paused
+                        ? "Chart paused"
+                        : "Updates every 3 seconds"}
                 </span>
 
             </div>

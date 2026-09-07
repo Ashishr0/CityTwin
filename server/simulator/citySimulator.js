@@ -1,3 +1,4 @@
+const generateAlerts = require("../utils/alertGenerator");
 const randomChange = (value, min, max, step = 5) => {
     const direction = Math.random() < 0.5 ? -1 : 1;
 
@@ -567,11 +568,15 @@ const startCitySimulator = (io) => {
 
         updateCityState(cityState);
 
+        const alerts = generateAlerts(cityState);
+
         io.emit("city_update", {
 
             timestamp: new Date(),
 
-            data: cityState
+            data: cityState,
+
+            alerts
         });
 
         // console.log(

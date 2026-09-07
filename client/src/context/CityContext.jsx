@@ -16,6 +16,8 @@ export const CityProvider = ({ children }) => {
     const [history, setHistory] = useState([]);
 
     const [connected, setConnected] = useState(false);
+    const [alerts, setAlerts] = useState([]);
+    const [alertHistory, setAlertHistory] = useState([]);
 
 
     useEffect(() => {
@@ -51,6 +53,29 @@ export const CityProvider = ({ children }) => {
             );
 
             setCityData(data);
+            setAlerts(data.alerts || []);
+
+            const incomingAlerts = (data.alerts || []).map(alert => ({
+                ...alert,
+                id: `${alert.type}-${alert.sourceId}`,
+                timestamp: new Date(data.timestamp),
+                read: false
+            }));
+
+            setAlertHistory(previousHistory => {
+                const existingIds = new Set(
+                    previousHistory.map(alert => alert.id)
+                );
+
+                const newAlerts = incomingAlerts.filter(
+                    alert => existingIds.has(alert.id) === false
+                );
+
+                return [
+                    ...newAlerts,
+                    ...previousHistory
+                ].slice(0, 50);
+            });
 
 
             // Store historical data
@@ -58,6 +83,7 @@ export const CityProvider = ({ children }) => {
 
                 const newEntry = {
                     timestamp: new Date(data.timestamp),
+                read: false,
 
                     traffic:
                         calculateAverage(
@@ -131,7 +157,7 @@ export const CityProvider = ({ children }) => {
         );
 
 
-        return () => {
+    return () => {
 
             socket.off(
                 "connect",
@@ -153,13 +179,40 @@ export const CityProvider = ({ children }) => {
 
     }, []);
 
+    const markAlertAsRead = (id) => {
+        setAlertHistory(previousHistory =>
+            previousHistory.map(alert =>
+                alert.id === id ? { ...alert, read: true } : alert
+            )
+        );
+    };
+
+    const markAllAlertsAsRead = () => {
+        setAlertHistory(previousHistory =>
+            previousHistory.map(alert => ({ ...alert, read: true }))
+        );
+    };
+
+    const clearAlert = (id) => {
+        setAlertHistory(previousHistory =>
+            previousHistory.filter(alert => alert.id !== id)
+        );
+    };
+
+    const unreadAlertCount = alertHistory.filter(alert => alert.read === false).length;
 
     return (
         <CityContext.Provider
             value={{
                 cityData,
                 history,
-                connected
+                connected,
+                alerts,
+                alertHistory,
+                markAlertAsRead,
+                markAllAlertsAsRead,
+                clearAlert,
+                unreadAlertCount
             }}
         >
             {children}

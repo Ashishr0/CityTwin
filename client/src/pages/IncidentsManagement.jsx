@@ -210,8 +210,8 @@ const IncidentsManagement = () => {
 
     if (!user) {
         return (
-            <div className="min-h-screen bg-slate-950 p-6 text-white">
-                <div className="mx-auto max-w-7xl">
+            <div className="min-h-screen bg-slate-50 p-4 text-slate-900 sm:p-6">
+                <div className="mx-auto w-full max-w-7xl min-w-0">
                     <h1 className="text-3xl font-bold">
                         Incidents Management
                     </h1>
@@ -225,59 +225,135 @@ const IncidentsManagement = () => {
     }
 
     return (
-        <div className="min-h-screen bg-slate-950 p-4 text-white sm:p-6">
-            <div className="mx-auto max-w-7xl">
+        <div className="min-h-screen w-full overflow-x-hidden bg-slate-50 p-3 sm:p-5 lg:p-6">
+            <div className="mx-auto w-full max-w-7xl min-w-0">
 
                 {/* HEADER */}
-                <div className="mb-8">
-                    <h1 className="text-3xl font-bold sm:text-4xl">
-                        Incidents Management
-                    </h1>
+                <div className="mb-6 overflow-hidden rounded-2xl border border-red-200 bg-gradient-to-r from-red-600 via-orange-500 to-amber-500 p-6 text-white shadow-[0_10px_30px_rgba(239,68,68,0.15)]">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                        <div className="min-w-0">
+                            <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-red-100">
+                                Emergency Monitoring
+                            </p>
 
-                    <p className="mt-2 text-slate-400">
-                        Monitor and manage city incidents.
-                    </p>
+                            <h1 className="text-2xl font-bold leading-tight sm:text-3xl">
+                                Incidents Management
+                            </h1>
+
+                            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-red-100">
+                                Monitor, create and manage incidents across the city.
+                            </p>
+                        </div>
+
+                        <span className="w-fit shrink-0 whitespace-nowrap rounded-full border border-emerald-200/40 bg-emerald-400/20 px-3 py-1.5 text-[9px] font-bold uppercase tracking-wider text-emerald-100">
+                            ● System Active
+                        </span>
+                    </div>
                 </div>
 
-                {/* ACCESS DENIED */}
+                {/* ACCESS */}
                 {!canManage && (
-                    <div className="mb-6 rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-red-300">
+                    <div className="mb-5 rounded-xl border border-orange-200 bg-orange-50 p-3 text-sm font-medium text-orange-700 shadow-sm">
                         You have view-only access to incidents.
                     </div>
                 )}
 
                 {/* MESSAGES */}
                 {message && (
-                    <div className="mb-6 rounded-xl border border-green-500/30 bg-green-500/10 p-4 text-green-300">
+                    <div className="mb-5 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm font-medium text-emerald-700 shadow-sm">
                         {message}
                     </div>
                 )}
 
                 {error && (
-                    <div className="mb-6 rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-red-300">
+                    <div className="mb-5 rounded-xl border border-red-200 bg-red-50 p-3 text-sm font-medium text-red-700 shadow-sm">
                         {error}
                     </div>
                 )}
 
+                {/* KPI CARDS */}
+                <div className="mb-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+
+                    <div className="rounded-2xl  bg-white p-5 shadow-[0_4px_16px_rgba(15,23,42,0.06)]">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                            Total Incidents
+                        </p>
+                        <p className="mt-2 text-2xl font-bold text-slate-800">
+                            {incidents.length}
+                        </p>
+                        <p className="mt-1 text-[10px] font-medium text-blue-600">
+                            Registered incidents
+                        </p>
+                    </div>
+
+                    <div className="rounded-2xl  bg-white p-5 shadow-[0_4px_16px_rgba(15,23,42,0.06)]">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                            Active
+                        </p>
+                        <p className="mt-2 text-2xl font-bold text-slate-800">
+                            {incidents.filter(v => v.status === "ACTIVE").length}
+                        </p>
+                        <p className="mt-1 text-[10px] font-medium text-red-600">
+                            Requiring attention
+                        </p>
+                    </div>
+
+                    <div className="rounded-2xl  bg-white p-5 shadow-[0_4px_16px_rgba(15,23,42,0.06)]">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                            Critical
+                        </p>
+                        <p className="mt-2 text-2xl font-bold text-slate-800">
+                            {incidents.filter(v => v.priority === "CRITICAL").length}
+                        </p>
+                        <p className="mt-1 text-[10px] font-medium text-red-600">
+                            Highest priority
+                        </p>
+                    </div>
+
+                    <div className="rounded-2xl  bg-white p-5 shadow-[0_4px_16px_rgba(15,23,42,0.06)]">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                            Resolved
+                        </p>
+                        <p className="mt-2 text-2xl font-bold text-slate-800">
+                            {incidents.filter(v => v.status === "RESOLVED").length}
+                        </p>
+                        <p className="mt-1 text-[10px] font-medium text-emerald-600">
+                            Successfully handled
+                        </p>
+                    </div>
+
+                </div>
+
                 {/* FORM */}
                 {canManage && (
-                    <div className="mb-8 rounded-xl bg-slate-800 p-4 sm:p-6">
-                        <div className="mb-6 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
-                            <h2 className="text-xl font-semibold">
-                                {editingId
-                                    ? "Update Incident"
-                                    : "Create Incident"}
-                            </h2>
+                    <div className="mb-6 rounded-2xl  bg-white p-5 shadow-[0_4px_18px_rgba(15,23,42,0.06)] sm:p-6">
 
-                            {editingId && (
-                                <button
-                                    type="button"
-                                    onClick={resetForm}
-                                    className="rounded-lg bg-slate-700 px-4 py-2 hover:bg-slate-600"
-                                >
-                                    Cancel Edit
-                                </button>
-                            )}
+                        <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                            <div className="min-w-0">
+                                <h2 className="text-lg font-bold leading-tight text-slate-800">
+                                    {editingId ? "Update Incident" : "Add Incident Data"}
+                                </h2>
+
+                                <p className="mt-1 text-[10px] leading-relaxed text-slate-600">
+                                    Enter incident details, priority, status and location.
+                                </p>
+                            </div>
+
+                            <div className="flex shrink-0 flex-wrap gap-2">
+                                <span className="w-fit whitespace-nowrap rounded-full bg-red-50 px-3 py-1 text-[9px] font-bold uppercase tracking-wider text-red-600">
+                                    Incident Data
+                                </span>
+
+                                {editingId && (
+                                    <button
+                                        type="button"
+                                        onClick={resetForm}
+                                        className="shrink-0 whitespace-nowrap rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-[9px] font-bold text-slate-700 transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 hover:shadow-sm"
+                                    >
+                                        Cancel Edit
+                                    </button>
+                                )}
+                            </div>
                         </div>
 
                         <form
@@ -285,50 +361,29 @@ const IncidentsManagement = () => {
                             className="grid grid-cols-1 gap-4 md:grid-cols-2"
                         >
 
-                            {/* TYPE */}
                             <div>
-                                <label className="mb-2 block text-sm text-slate-300">
+                                <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
                                     Incident Type
                                 </label>
-
                                 <select
                                     name="type"
                                     value={form.type}
                                     onChange={handleChange}
-                                    className="w-full rounded-lg bg-slate-700 px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-red-500 focus:bg-white focus:ring-2 focus:ring-red-100"
                                 >
-                                    <option value="ACCIDENT">
-                                        ACCIDENT
-                                    </option>
-
-                                    <option value="FIRE">
-                                        FIRE
-                                    </option>
-
-                                    <option value="WATER_LEAK">
-                                        WATER LEAK
-                                    </option>
-
-                                    <option value="POWER_OUTAGE">
-                                        POWER OUTAGE
-                                    </option>
-
-                                    <option value="POLLUTION">
-                                        POLLUTION
-                                    </option>
-
-                                    <option value="OTHER">
-                                        OTHER
-                                    </option>
+                                    <option value="ACCIDENT">ACCIDENT</option>
+                                    <option value="FIRE">FIRE</option>
+                                    <option value="WATER_LEAK">WATER LEAK</option>
+                                    <option value="POWER_OUTAGE">POWER OUTAGE</option>
+                                    <option value="POLLUTION">POLLUTION</option>
+                                    <option value="OTHER">OTHER</option>
                                 </select>
                             </div>
 
-                            {/* TITLE */}
                             <div>
-                                <label className="mb-2 block text-sm text-slate-300">
+                                <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
                                     Title
                                 </label>
-
                                 <input
                                     type="text"
                                     name="title"
@@ -336,88 +391,61 @@ const IncidentsManagement = () => {
                                     onChange={handleChange}
                                     placeholder="Enter incident title"
                                     required
-                                    className="w-full rounded-lg bg-slate-700 px-4 py-3 outline-none placeholder:text-slate-500 focus:ring-2 focus:ring-blue-500"
+                                    className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 transition focus:border-red-500 focus:bg-white focus:ring-2 focus:ring-red-100"
                                 />
                             </div>
 
-                            {/* DESCRIPTION */}
                             <div className="md:col-span-2">
-                                <label className="mb-2 block text-sm text-slate-300">
+                                <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
                                     Description
                                 </label>
-
                                 <textarea
                                     name="description"
                                     value={form.description}
                                     onChange={handleChange}
                                     placeholder="Describe the incident"
                                     rows="3"
-                                    className="w-full rounded-lg bg-slate-700 px-4 py-3 outline-none placeholder:text-slate-500 focus:ring-2 focus:ring-blue-500"
+                                    className="w-full resize-none rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 transition focus:border-red-500 focus:bg-white focus:ring-2 focus:ring-red-100"
                                 />
                             </div>
 
-                            {/* PRIORITY */}
                             <div>
-                                <label className="mb-2 block text-sm text-slate-300">
+                                <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
                                     Priority
                                 </label>
-
                                 <select
                                     name="priority"
                                     value={form.priority}
                                     onChange={handleChange}
-                                    className="w-full rounded-lg bg-slate-700 px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-red-500 focus:bg-white focus:ring-2 focus:ring-red-100"
                                 >
-                                    <option value="LOW">
-                                        LOW
-                                    </option>
-
-                                    <option value="MEDIUM">
-                                        MEDIUM
-                                    </option>
-
-                                    <option value="HIGH">
-                                        HIGH
-                                    </option>
-
-                                    <option value="CRITICAL">
-                                        CRITICAL
-                                    </option>
+                                    <option value="LOW">LOW</option>
+                                    <option value="MEDIUM">MEDIUM</option>
+                                    <option value="HIGH">HIGH</option>
+                                    <option value="CRITICAL">CRITICAL</option>
                                 </select>
                             </div>
 
-                            {/* STATUS */}
                             <div>
-                                <label className="mb-2 block text-sm text-slate-300">
+                                <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
                                     Status
                                 </label>
-
                                 <select
                                     name="status"
                                     value={form.status}
                                     onChange={handleChange}
-                                    className="w-full rounded-lg bg-slate-700 px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-red-500 focus:bg-white focus:ring-2 focus:ring-red-100"
                                 >
-                                    <option value="ACTIVE">
-                                        ACTIVE
-                                    </option>
-
-                                    <option value="IN_PROGRESS">
-                                        IN PROGRESS
-                                    </option>
-
-                                    <option value="RESOLVED">
-                                        RESOLVED
-                                    </option>
+                                    <option value="ACTIVE">ACTIVE</option>
+                                    <option value="IN_PROGRESS">IN PROGRESS</option>
+                                    <option value="RESOLVED">RESOLVED</option>
                                 </select>
                             </div>
 
-                            {/* LATITUDE */}
                             <div>
-                                <label className="mb-2 block text-sm text-slate-300">
+                                <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
                                     Latitude
                                 </label>
-
                                 <input
                                     type="number"
                                     step="any"
@@ -426,16 +454,14 @@ const IncidentsManagement = () => {
                                     onChange={handleChange}
                                     placeholder="28.6139"
                                     required
-                                    className="w-full rounded-lg bg-slate-700 px-4 py-3 outline-none placeholder:text-slate-500 focus:ring-2 focus:ring-blue-500"
+                                    className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 transition focus:border-red-500 focus:bg-white focus:ring-2 focus:ring-red-100"
                                 />
                             </div>
 
-                            {/* LONGITUDE */}
                             <div>
-                                <label className="mb-2 block text-sm text-slate-300">
+                                <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
                                     Longitude
                                 </label>
-
                                 <input
                                     type="number"
                                     step="any"
@@ -444,92 +470,120 @@ const IncidentsManagement = () => {
                                     onChange={handleChange}
                                     placeholder="77.2090"
                                     required
-                                    className="w-full rounded-lg bg-slate-700 px-4 py-3 outline-none placeholder:text-slate-500 focus:ring-2 focus:ring-blue-500"
+                                    className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 transition focus:border-red-500 focus:bg-white focus:ring-2 focus:ring-red-100"
                                 />
                             </div>
 
-                            {/* REPORTED BY */}
                             <div className="md:col-span-2">
-                                <label className="mb-2 block text-sm text-slate-300">
+                                <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
                                     Reported By
                                 </label>
-
                                 <input
                                     type="text"
                                     name="reportedBy"
                                     value={form.reportedBy}
                                     onChange={handleChange}
                                     placeholder="Admin / Operator / Citizen"
-                                    className="w-full rounded-lg bg-slate-700 px-4 py-3 outline-none placeholder:text-slate-500 focus:ring-2 focus:ring-blue-500"
+                                    className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 transition focus:border-red-500 focus:bg-white focus:ring-2 focus:ring-red-100"
                                 />
                             </div>
 
-                            {/* SUBMIT */}
-                            <div className="md:col-span-2">
+                            <div className="flex flex-wrap gap-3 pt-2 md:col-span-2">
                                 <button
                                     type="submit"
-                                    className="w-full rounded-lg bg-blue-600 px-5 py-3 font-medium hover:bg-blue-700 sm:w-auto"
+                                    className="shrink-0 whitespace-nowrap rounded-xl bg-gradient-to-r from-red-600 to-orange-500 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:from-red-700 hover:to-orange-600 hover:shadow-md active:translate-y-0"
                                 >
-                                    {editingId
-                                        ? "Update Incident"
-                                        : "Create Incident"}
+                                    {editingId ? "Update Incident" : "Add Incident"}
                                 </button>
                             </div>
+
                         </form>
                     </div>
                 )}
 
-                {/* INCIDENT TABLE */}
-                <div className="rounded-xl bg-slate-800 p-4 sm:p-6">
-                    <div className="mb-6 flex items-center justify-between">
-                        <h2 className="text-xl font-semibold">
-                            City Incidents
-                        </h2>
+                {/* INCIDENT RECORDS */}
+                <div className="overflow-hidden rounded-2xl  bg-white shadow-[0_4px_18px_rgba(15,23,42,0.06)]">
 
-                        <span className="rounded-full bg-slate-700 px-3 py-1 text-sm text-slate-300">
-                            {incidents.length} Total
-                        </span>
+                    <div className="flex flex-col gap-4 border-b border-slate-200 p-5 sm:flex-row sm:items-start sm:justify-between sm:p-6">
+
+                        <div className="min-w-0">
+                            <h2 className="text-lg font-bold leading-tight text-slate-800">
+                                City Incidents
+                            </h2>
+                            <p className="mt-1 text-[10px] leading-relaxed text-slate-600">
+                                Monitor incident type, priority, status and location.
+                            </p>
+                        </div>
+
+                        <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
+                            <input
+                                type="text"
+                                placeholder="Search incidents..."
+                                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-2.5 text-xs text-slate-800 outline-none transition focus:border-red-500 focus:bg-white focus:ring-2 focus:ring-red-100 sm:w-64"
+                                onChange={(e) => {
+                                    const value = e.target.value.toLowerCase();
+
+                                    document
+                                        .querySelectorAll("[data-incident-row]")
+                                        .forEach(row => {
+                                            row.style.display =
+                                                row.innerText
+                                                    .toLowerCase()
+                                                    .includes(value)
+                                                    ? ""
+                                                    : "none";
+                                        });
+                                }}
+                            />
+
+                            <span className="w-fit shrink-0 whitespace-nowrap rounded-full bg-red-50 px-3 py-1 text-[9px] font-bold uppercase tracking-wider text-red-600">
+                                {incidents.length} Total
+                            </span>
+                        </div>
+
                     </div>
 
                     {loading ? (
-                        <p className="text-slate-400">
+                        <div className="p-10 text-center text-sm font-medium text-slate-600">
                             Loading incidents...
-                        </p>
+                        </div>
                     ) : incidents.length === 0 ? (
-                        <p className="text-slate-400">
+                        <div className="p-10 text-center text-sm font-medium text-slate-600">
                             No incidents found.
-                        </p>
+                        </div>
                     ) : (
                         <div className="overflow-x-auto">
-                            <table className="w-full min-w-[1000px] text-left">
-                                <thead>
-                                    <tr className="border-b border-slate-700 text-sm text-slate-400">
-                                        <th className="px-4 py-3">
+
+                            <table className="w-full min-w-[1100px]">
+
+                                <thead className="bg-slate-100">
+                                    <tr>
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
                                             Type
                                         </th>
 
-                                        <th className="px-4 py-3">
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
                                             Title
                                         </th>
 
-                                        <th className="px-4 py-3">
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
                                             Priority
                                         </th>
 
-                                        <th className="px-4 py-3">
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
                                             Status
                                         </th>
 
-                                        <th className="px-4 py-3">
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
                                             Location
                                         </th>
 
-                                        <th className="px-4 py-3">
+                                        <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-600">
                                             Reported By
                                         </th>
 
                                         {canManage && (
-                                            <th className="px-4 py-3">
+                                            <th className="px-4 py-3 text-right text-[9px] font-bold uppercase tracking-wider text-slate-600">
                                                 Actions
                                             </th>
                                         )}
@@ -540,78 +594,102 @@ const IncidentsManagement = () => {
                                     {incidents.map((incident) => (
                                         <tr
                                             key={incident._id}
-                                            className="border-b border-slate-700 last:border-0 hover:bg-slate-700/40"
+                                            data-incident-row
+                                            className="border-t border-slate-200 transition-colors hover:bg-red-50/30"
                                         >
-                                            <td className="px-4 py-4">
+
+                                            <td className="px-4 py-4 text-xs font-bold text-slate-800">
                                                 {incident.type}
                                             </td>
 
                                             <td className="px-4 py-4">
-                                                <div className="font-medium">
+                                                <div className="max-w-xs text-sm font-bold text-slate-800">
                                                     {incident.title}
                                                 </div>
 
                                                 {incident.description && (
-                                                    <div className="mt-1 max-w-xs truncate text-sm text-slate-400">
+                                                    <div className="mt-1 max-w-xs truncate text-[10px] text-slate-600">
                                                         {incident.description}
                                                     </div>
                                                 )}
                                             </td>
 
                                             <td className="px-4 py-4">
-                                                {incident.priority}
+                                                <span
+                                                    className={`inline-flex rounded-full px-2.5 py-1 text-[9px] font-bold ${
+                                                        incident.priority === "CRITICAL"
+                                                            ? "bg-red-50 text-red-600"
+                                                            : incident.priority === "HIGH"
+                                                                ? "bg-orange-50 text-orange-600"
+                                                                : incident.priority === "MEDIUM"
+                                                                    ? "bg-amber-50 text-amber-600"
+                                                                    : "bg-slate-100 text-slate-600"
+                                                    }`}
+                                                >
+                                                    {incident.priority}
+                                                </span>
                                             </td>
 
                                             <td className="px-4 py-4">
-                                                {incident.status}
+                                                <span
+                                                    className={`inline-flex rounded-full px-2.5 py-1 text-[9px] font-bold ${
+                                                        incident.status === "ACTIVE"
+                                                            ? "bg-red-50 text-red-600"
+                                                            : incident.status === "IN_PROGRESS"
+                                                                ? "bg-blue-50 text-blue-600"
+                                                                : "bg-emerald-50 text-emerald-600"
+                                                    }`}
+                                                >
+                                                    {incident.status}
+                                                </span>
                                             </td>
 
-                                            <td className="px-4 py-4">
+                                            <td className="px-4 py-4 text-xs font-medium text-slate-600">
                                                 {incident.location?.lat},{" "}
                                                 {incident.location?.lng}
                                             </td>
 
-                                            <td className="px-4 py-4">
+                                            <td className="px-4 py-4 text-xs font-medium text-slate-700">
                                                 {incident.reportedBy || "-"}
                                             </td>
 
                                             {canManage && (
-                                                <td className="px-4 py-4">
-                                                    <div className="flex gap-2">
+                                                <td className="px-4 py-4 text-right">
+                                                    <div className="flex items-center justify-end gap-2">
+
                                                         <button
-                                                            onClick={() =>
-                                                                handleEdit(
-                                                                    incident
-                                                                )
-                                                            }
-                                                            className="rounded-lg bg-yellow-600 px-3 py-2 text-sm hover:bg-yellow-700"
+                                                            onClick={() => handleEdit(incident)}
+                                                            className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-[9px] font-bold text-blue-600 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-500 hover:bg-blue-500 hover:text-white hover:shadow-md active:translate-y-0"
                                                         >
                                                             Edit
                                                         </button>
 
                                                         <button
-                                                            onClick={() =>
-                                                                handleDelete(
-                                                                    incident._id
-                                                                )
-                                                            }
-                                                            className="rounded-lg bg-red-600 px-3 py-2 text-sm hover:bg-red-700"
+                                                            onClick={() => handleDelete(incident._id)}
+                                                            className="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-[9px] font-bold text-red-500 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-red-500 hover:bg-red-500 hover:text-white hover:shadow-md active:translate-y-0"
                                                         >
                                                             Delete
                                                         </button>
+
                                                     </div>
                                                 </td>
                                             )}
+
                                         </tr>
                                     ))}
                                 </tbody>
+
                             </table>
+
                         </div>
                     )}
+
                 </div>
+
             </div>
         </div>
     );
+
 };
 
 export default IncidentsManagement;

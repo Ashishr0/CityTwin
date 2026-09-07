@@ -1,199 +1,203 @@
 import {
+    Circle,
     MapContainer,
-    TileLayer,
     Marker,
     Popup,
-    Circle
+    TileLayer
 } from "react-leaflet";
-
 import L from "leaflet";
+import { useMemo, useState } from "react";
 import "leaflet/dist/leaflet.css";
-
 import { useCity } from "../context/CityContext";
-import { useEffect } from "react";
-import { useMap } from "react-leaflet";
 
-// Fix Leaflet default marker icons
-delete L.Icon.Default.prototype._getIconUrl;
+const createIcon = (color) =>
+    L.divIcon({
+        className: "",
+        html: `
+            <div style="
+                width: 28px;
+                height: 28px;
+                border-radius: 50%;
+                background: ${color};
+                border: 3px solid white;
+                box-shadow: 0 3px 10px rgba(15,23,42,0.25);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: 13px;
+                font-weight: 700;
+            ">
+                •
+            </div>
+        `,
+        iconSize: [28, 28],
+        iconAnchor: [14, 14],
+        popupAnchor: [0, -14]
+    });
 
-L.Icon.Default.mergeOptions({
-    iconRetinaUrl:
-        "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-
-    iconUrl:
-        "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-
-    shadowUrl:
-        "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png"
-});
-
-const trafficIcon = L.divIcon({
-    className: "",
-    html: `
-        <div style="
-            width: 18px;
-            height: 18px;
-            background: #ef4444;
-            border: 3px solid white;
-            border-radius: 50%;
-            box-shadow: 0 0 10px rgba(239,68,68,0.8);
-        "></div>
-    `,
-    iconSize: [18, 18],
-    iconAnchor: [9, 9]
-});
-
-const environmentIcon = L.divIcon({
-    className: "",
-    html: `
-        <div style="
-            width: 18px;
-            height: 18px;
-            background: #22c55e;
-            border: 3px solid white;
-            border-radius: 50%;
-            box-shadow: 0 0 10px rgba(34,197,94,0.8);
-        "></div>
-    `,
-    iconSize: [18, 18],
-    iconAnchor: [9, 9]
-});
-
-const wasteIcon = L.divIcon({
-    className: "",
-    html: `
-        <div style="
-            width: 18px;
-            height: 18px;
-            background: #eab308;
-            border: 3px solid white;
-            border-radius: 50%;
-            box-shadow: 0 0 10px rgba(234,179,8,0.8);
-        "></div>
-    `,
-    iconSize: [18, 18],
-    iconAnchor: [9, 9]
-});
-
-const vehicleIcon = L.divIcon({
-    className: "",
-    html: `
-        <div style="
-            width: 18px;
-            height: 18px;
-            background: #3b82f6;
-            border: 3px solid white;
-            border-radius: 50%;
-            box-shadow: 0 0 10px rgba(59,130,246,0.8);
-        "></div>
-    `,
-    iconSize: [18, 18],
-    iconAnchor: [9, 9]
-});
-
-const incidentIcon = L.divIcon({
-    className: "",
-    html: `
-        <div style="
-            width: 20px;
-            height: 20px;
-            background: #a855f7;
-            border: 3px solid white;
-            border-radius: 50%;
-            box-shadow: 0 0 12px rgba(168,85,247,0.9);
-        "></div>
-    `,
-    iconSize: [20, 20],
-    iconAnchor: [10, 10]
-});
-
-const MapResizeHandler = () => {
-    const map = useMap();
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            map.invalidateSize();
-            map.setView([28.6139, 77.2090], 13);
-        }, 150);
-
-        return () => clearTimeout(timer);
-    }, [map]);
-
-    return null;
+const icons = {
+    traffic: createIcon("#ef4444"),
+    environment: createIcon("#10b981"),
+    waste: createIcon("#f59e0b"),
+    vehicles: createIcon("#3b82f6"),
+    incidents: createIcon("#8b5cf6"),
+    buildings: createIcon("#6366f1")
 };
 
+const filters = [
+    { key: "all", label: "All" },
+    { key: "traffic", label: "Traffic" },
+    { key: "environment", label: "Environment" },
+    { key: "waste", label: "Waste" },
+    { key: "vehicles", label: "Vehicles" },
+    { key: "incidents", label: "Incidents" },
+    { key: "buildings", label: "Buildings" }
+];
+
 const CityMap = () => {
+    const { cityData, connected } = useCity();
+    const [activeFilter, setActiveFilter] = useState("all");
 
-    const { cityData } = useCity();
+    const data = cityData?.data || {};
 
-    const traffic = cityData?.data?.traffic || [];
-    const environment = cityData?.data?.environment || [];
-    const waste = cityData?.data?.waste || [];
-    const vehicles = cityData?.data?.vehicles || [];
-    const incidents = cityData?.data?.incidents || [];
-    const buildings = cityData?.data?.buildings || [];
+    const traffic = data.traffic || [];
+    const environment = data.environment || [];
+    const waste = data.waste || [];
+    const vehicles = data.vehicles || [];
+    const incidents = data.incidents || [];
+    const buildings = data.buildings || [];
 
-    // Temporary city center
-    // We will replace this with the actual city later.
-    const cityCenter = [28.6139, 77.2090];
+    const counts = useMemo(
+        () => ({
+            traffic: traffic.length,
+            environment: environment.length,
+            waste: waste.length,
+            vehicles: vehicles.length,
+            incidents: incidents.length,
+            buildings: buildings.length
+        }),
+        [
+            traffic.length,
+            environment.length,
+            waste.length,
+            vehicles.length,
+            incidents.length,
+            buildings.length
+        ]
+    );
+
+    const show = (type) =>
+        activeFilter === "all" || activeFilter === type;
+
+    const formatNumber = (value) => {
+        const number = Number(value);
+
+        if (!Number.isFinite(number)) {
+            return "—";
+        }
+
+        return number.toLocaleString(undefined, {
+            maximumFractionDigits: 2
+        });
+    };
 
     return (
-        <div className="w-full min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white">
+        <div className="w-full overflow-hidden rounded-2xl bg-white shadow-sm">
 
-            {/* Map Header */}
+            {/* HEADER */}
 
-            <div className="flex flex-col gap-4 border-b border-slate-200 p-5 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col gap-4 border-b border-slate-100 p-4 sm:p-5 lg:flex-row lg:items-center lg:justify-between">
 
                 <div>
-                    <h2 className="text-xl font-bold text-slate-900">
-                        🗺️ City Digital Map
-                    </h2>
+                    <div className="flex items-center gap-3">
+                        <h2 className="text-lg font-bold text-slate-900 sm:text-xl">
+                            City Map
+                        </h2>
+
+                        <span
+                            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide ${
+                                connected
+                                    ? "bg-emerald-50 text-emerald-700"
+                                    : "bg-red-50 text-red-700"
+                            }`}
+                        >
+                            <span
+                                className={`h-1.5 w-1.5 rounded-full ${
+                                    connected
+                                        ? "bg-emerald-500"
+                                        : "bg-red-500"
+                                }`}
+                            />
+
+                            {connected ? "Live" : "Offline"}
+                        </span>
+                    </div>
 
                     <p className="mt-1 text-sm text-slate-500">
-                        Real-time city infrastructure monitoring
+                        Monitor and analyze real-time city activity.
                     </p>
                 </div>
 
-                {/* Legend */}
+                <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
 
-                <div className="flex flex-wrap gap-4 text-xs text-slate-600">
+                    {[
+                        ["Traffic", counts.traffic, "text-red-600"],
+                        ["Sensors", counts.environment, "text-emerald-600"],
+                        ["Waste", counts.waste, "text-amber-600"],
+                        ["Vehicles", counts.vehicles, "text-blue-600"],
+                        ["Incidents", counts.incidents, "text-violet-600"],
+                        ["Buildings", counts.buildings, "text-indigo-600"]
+                    ].map(([label, value, color]) => (
+                        <div
+                            key={label}
+                            className="min-w-0 rounded-lg bg-slate-50 px-2 py-2 text-center"
+                        >
+                            <p
+                                className={`text-sm font-bold ${color}`}
+                            >
+                                {value}
+                            </p>
 
-                    <div className="flex items-center gap-2">
-                        <span className="h-3 w-3 rounded-full bg-red-500"></span>
-                        Traffic
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                        <span className="h-3 w-3 rounded-full bg-green-500"></span>
-                        Environment
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                        <span className="h-3 w-3 rounded-full bg-yellow-500"></span>
-                        Waste
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                        <span className="h-3 w-3 rounded-full bg-blue-500"></span>
-                        Vehicle
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                        <span className="h-3 w-3 rounded-full bg-purple-500"></span>
-                        Incident
-                    </div>
+                            <p className="truncate text-[9px] font-medium uppercase tracking-wide text-slate-400">
+                                {label}
+                            </p>
+                        </div>
+                    ))}
 
                 </div>
-
             </div>
 
-            {/* Map */}
+            {/* FILTERS */}
 
-            <div className="h-[320px] w-full sm:h-[360px] lg:h-[420px]">
+            <div className="flex gap-2 overflow-x-auto px-4 py-3 sm:px-5">
+                {filters.map((filter) => {
+                    const isActive = activeFilter === filter.key;
+
+                    return (
+                        <button
+                            key={filter.key}
+                            type="button"
+                            onClick={() => setActiveFilter(filter.key)}
+                            className={`shrink-0 rounded-lg px-3 py-2 text-xs font-semibold transition ${
+                                isActive
+                                    ? "bg-slate-900 text-white shadow-sm"
+                                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                            }`}
+                        >
+                            {filter.label}
+                        </button>
+                    );
+                })}
+            </div>
+
+            {/* MAP */}
+
+            <div className="relative h-[360px] w-full sm:h-[430px] lg:h-[500px]">
 
                 <MapContainer
-                    center={cityCenter}
-                    zoom={13}
+                    center={[28.6139, 77.209]}
+                    zoom={12}
                     scrollWheelZoom={true}
                     className="h-full w-full"
                 >
@@ -203,262 +207,416 @@ const CityMap = () => {
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
 
-                    {/* Traffic */}
+                    {/* TRAFFIC */}
 
-                    {traffic.map((item, index) => {
+                    {show("traffic") &&
+                        traffic.map((item, index) => {
+                            const lat = Number(item.location?.lat);
+                            const lng = Number(item.location?.lng);
 
-                        if (!item.location?.lat || !item.location?.lng) {
-                            return null;
-                        }
+                            if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+                                return null;
+                            }
 
-                        return (
-                            <Marker
-                                key={`traffic-${item._id || index}`}
-                                position={[
-                                    item.location.lat,
-                                    item.location.lng
-                                ]}
-                                icon={trafficIcon}
-                            >
-                                <Popup>
-
-                                    <strong>
-                                        🚦 Traffic Intersection
-                                    </strong>
-
-                                    <br />
-
-                                    Intersection:
-                                    {" "}
-                                    {item.intersectionId}
-
-                                    <br />
-
-                                    Congestion:
-                                    {" "}
-                                    {item.congestion}%
-
-                                    <br />
-
-                                    Speed:
-                                    {" "}
-                                    {item.averageSpeed} km/h
-
-                                </Popup>
-
+                            return (
                                 <Circle
-                                    center={[
-                                        item.location.lat,
-                                        item.location.lng
-                                    ]}
-                                    radius={300}
+                                    key={`traffic-${item._id || index}`}
+                                    center={[lat, lng]}
+                                    radius={180}
                                     pathOptions={{
-                                        color: "red",
-                                        fillOpacity: 0.08
+                                        color: "#ef4444",
+                                        fillColor: "#ef4444",
+                                        fillOpacity: 0.14,
+                                        weight: 2
                                     }}
                                 />
+                            );
+                        })}
 
-                            </Marker>
-                        );
-                    })}
+                    {show("traffic") &&
+                        traffic.map((item, index) => {
+                            const lat = Number(item.location?.lat);
+                            const lng = Number(item.location?.lng);
 
-                    {/* Environment */}
+                            if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+                                return null;
+                            }
 
-                    {environment.map((item, index) => {
+                            return (
+                                <Marker
+                                    key={`traffic-marker-${item._id || index}`}
+                                    position={[lat, lng]}
+                                    icon={icons.traffic}
+                                >
+                                    <Popup>
+                                        <div className="min-w-[180px]">
+                                            <p className="text-xs font-bold uppercase tracking-wide text-red-500">
+                                                Traffic
+                                            </p>
 
-                        if (!item.location?.lat || !item.location?.lng) {
-                            return null;
-                        }
+                                            <p className="mt-1 font-bold text-slate-900">
+                                                {item.intersection ||
+                                                    "Traffic Point"}
+                                            </p>
 
-                        return (
-                            <Marker
-                                key={`environment-${item._id || index}`}
-                                position={[
-                                    item.location.lat,
-                                    item.location.lng
-                                ]}
-                                icon={environmentIcon}
-                            >
-                                <Popup>
+                                            <div className="mt-2 space-y-1 text-sm text-slate-600">
+                                                <p>
+                                                    Congestion:{" "}
+                                                    <strong>
+                                                        {formatNumber(
+                                                            item.congestion
+                                                        )}
+                                                        %
+                                                    </strong>
+                                                </p>
 
-                                    <strong>
-                                        🌳 Environment Sensor
-                                    </strong>
+                                                <p>
+                                                    Average speed:{" "}
+                                                    <strong>
+                                                        {formatNumber(
+                                                            item.averageSpeed
+                                                        )}{" "}
+                                                        km/h
+                                                    </strong>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </Popup>
+                                </Marker>
+                            );
+                        })}
 
-                                    <br />
+                    {/* ENVIRONMENT */}
 
-                                    Location:
-                                    {" "}
-                                    {item.location}
+                    {show("environment") &&
+                        environment.map((item, index) => {
+                            const lat = Number(item.location?.lat);
+                            const lng = Number(item.location?.lng);
 
-                                    <br />
+                            if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+                                return null;
+                            }
 
-                                    AQI:
-                                    {" "}
-                                    {item.aqi}
+                            return (
+                                <Marker
+                                    key={`environment-${item._id || index}`}
+                                    position={[lat, lng]}
+                                    icon={icons.environment}
+                                >
+                                    <Popup>
+                                        <div className="min-w-[180px]">
+                                            <p className="text-xs font-bold uppercase tracking-wide text-emerald-600">
+                                                Environment
+                                            </p>
 
-                                    <br />
+                                            <p className="mt-1 font-bold text-slate-900">
+                                                {item.sensorId ||
+                                                    "Environment Sensor"}
+                                            </p>
 
-                                    PM2.5:
-                                    {" "}
-                                    {item.pm25}
+                                            <div className="mt-2 space-y-1 text-sm text-slate-600">
+                                                <p>
+                                                    AQI:{" "}
+                                                    <strong>
+                                                        {formatNumber(item.aqi)}
+                                                    </strong>
+                                                </p>
 
-                                    <br />
+                                                <p>
+                                                    Temperature:{" "}
+                                                    <strong>
+                                                        {formatNumber(
+                                                            item.temperature
+                                                        )}
+                                                        °C
+                                                    </strong>
+                                                </p>
 
-                                    Temperature:
-                                    {" "}
-                                    {item.temperature}°C
+                                                <p>
+                                                    Humidity:{" "}
+                                                    <strong>
+                                                        {formatNumber(
+                                                            item.humidity
+                                                        )}
+                                                        %
+                                                    </strong>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </Popup>
+                                </Marker>
+                            );
+                        })}
 
-                                </Popup>
-                            </Marker>
-                        );
-                    })}
+                    {/* WASTE */}
 
-                    {/* Waste */}
+                    {show("waste") &&
+                        waste.map((item, index) => {
+                            const lat = Number(item.location?.lat);
+                            const lng = Number(item.location?.lng);
 
-                    {waste.map((item, index) => {
+                            if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+                                return null;
+                            }
 
-                        if (!item.location?.lat || !item.location?.lng) {
-                            return null;
-                        }
+                            return (
+                                <Marker
+                                    key={`waste-${item._id || index}`}
+                                    position={[lat, lng]}
+                                    icon={icons.waste}
+                                >
+                                    <Popup>
+                                        <div className="min-w-[180px]">
+                                            <p className="text-xs font-bold uppercase tracking-wide text-amber-600">
+                                                Waste Bin
+                                            </p>
 
-                        return (
-                            <Marker
-                                key={`waste-${item._id || index}`}
-                                position={[
-                                    item.location.lat,
-                                    item.location.lng
-                                ]}
-                                icon={wasteIcon}
-                            >
-                                <Popup>
+                                            <p className="mt-1 font-bold text-slate-900">
+                                                {item.binId || "Waste Bin"}
+                                            </p>
 
-                                    <strong>
-                                        🗑️ Waste Bin
-                                    </strong>
+                                            <div className="mt-2 space-y-1 text-sm text-slate-600">
+                                                <p>
+                                                    Fill level:{" "}
+                                                    <strong>
+                                                        {formatNumber(
+                                                            item.fillLevel
+                                                        )}
+                                                        %
+                                                    </strong>
+                                                </p>
 
-                                    <br />
+                                                <p>
+                                                    Status:{" "}
+                                                    <strong>
+                                                        {item.status || "—"}
+                                                    </strong>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </Popup>
+                                </Marker>
+                            );
+                        })}
 
-                                    Bin:
-                                    {" "}
-                                    {item.binId}
+                    {/* VEHICLES */}
 
-                                    <br />
+                    {show("vehicles") &&
+                        vehicles.map((item, index) => {
+                            const lat = Number(item.location?.lat);
+                            const lng = Number(item.location?.lng);
 
-                                    Fill Level:
-                                    {" "}
-                                    {item.fillLevel}%
+                            if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+                                return null;
+                            }
 
-                                    <br />
+                            return (
+                                <Marker
+                                    key={`vehicle-${item._id || index}`}
+                                    position={[lat, lng]}
+                                    icon={icons.vehicles}
+                                >
+                                    <Popup>
+                                        <div className="min-w-[180px]">
+                                            <p className="text-xs font-bold uppercase tracking-wide text-blue-600">
+                                                Vehicle
+                                            </p>
 
-                                    Status:
-                                    {" "}
-                                    {item.status}
+                                            <p className="mt-1 font-bold text-slate-900">
+                                                {item.vehicleId ||
+                                                    "City Vehicle"}
+                                            </p>
 
-                                </Popup>
-                            </Marker>
-                        );
-                    })}
+                                            <div className="mt-2 space-y-1 text-sm text-slate-600">
+                                                <p>
+                                                    Status:{" "}
+                                                    <strong>
+                                                        {item.status || "—"}
+                                                    </strong>
+                                                </p>
 
-                    {/* Vehicles */}
+                                                <p>
+                                                    Speed:{" "}
+                                                    <strong>
+                                                        {formatNumber(item.speed)}{" "}
+                                                        km/h
+                                                    </strong>
+                                                </p>
 
-                    {vehicles.map((item, index) => {
+                                                <p>
+                                                    Passengers:{" "}
+                                                    <strong>
+                                                        {formatNumber(
+                                                            item.passengers
+                                                        )}
+                                                    </strong>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </Popup>
+                                </Marker>
+                            );
+                        })}
 
-                        if (!item.location?.lat || !item.location?.lng) {
-                            return null;
-                        }
+                    {/* INCIDENTS */}
 
-                        return (
-                            <Marker
-                                key={`vehicle-${item._id || index}`}
-                                position={[
-                                    item.location.lat,
-                                    item.location.lng
-                                ]}
-                                icon={vehicleIcon}
-                            >
-                                <Popup>
+                    {show("incidents") &&
+                        incidents.map((item, index) => {
+                            const lat = Number(item.location?.lat);
+                            const lng = Number(item.location?.lng);
 
-                                    <strong>
-                                        🚍 Vehicle
-                                    </strong>
+                            if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+                                return null;
+                            }
 
-                                    <br />
+                            return (
+                                <Marker
+                                    key={`incident-${item._id || index}`}
+                                    position={[lat, lng]}
+                                    icon={icons.incidents}
+                                >
+                                    <Popup>
+                                        <div className="min-w-[180px]">
+                                            <p className="text-xs font-bold uppercase tracking-wide text-violet-600">
+                                                Incident
+                                            </p>
 
-                                    Vehicle:
-                                    {" "}
-                                    {item.vehicleId}
+                                            <p className="mt-1 font-bold text-slate-900">
+                                                {item.title ||
+                                                    item.type ||
+                                                    "City Incident"}
+                                            </p>
 
-                                    <br />
+                                            <div className="mt-2 space-y-1 text-sm text-slate-600">
+                                                <p>
+                                                    Priority:{" "}
+                                                    <strong>
+                                                        {item.priority || "—"}
+                                                    </strong>
+                                                </p>
 
-                                    Type:
-                                    {" "}
-                                    {item.type}
+                                                <p>
+                                                    Status:{" "}
+                                                    <strong>
+                                                        {item.status || "—"}
+                                                    </strong>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </Popup>
+                                </Marker>
+                            );
+                        })}
 
-                                    <br />
+                    {/* BUILDINGS */}
 
-                                    Speed:
-                                    {" "}
-                                    {item.speed} km/h
+                    {show("buildings") &&
+                        buildings.map((item, index) => {
+                            const lat = Number(item.location?.lat);
+                            const lng = Number(item.location?.lng);
 
-                                    <br />
+                            if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+                                return null;
+                            }
 
-                                    Status:
-                                    {" "}
-                                    {item.status}
+                            return (
+                                <Marker
+                                    key={`building-${item._id || index}`}
+                                    position={[lat, lng]}
+                                    icon={icons.buildings}
+                                >
+                                    <Popup>
+                                        <div className="min-w-[180px]">
+                                            <p className="text-xs font-bold uppercase tracking-wide text-indigo-600">
+                                                Building
+                                            </p>
 
-                                </Popup>
-                            </Marker>
-                        );
-                    })}
+                                            <p className="mt-1 font-bold text-slate-900">
+                                                {item.name ||
+                                                    item.buildingId ||
+                                                    "City Building"}
+                                            </p>
 
-                    {/* Incidents */}
+                                            <div className="mt-2 space-y-1 text-sm text-slate-600">
+                                                <p>
+                                                    Type:{" "}
+                                                    <strong>
+                                                        {item.type || "—"}
+                                                    </strong>
+                                                </p>
 
-                    {incidents.map((item, index) => {
+                                                <p>
+                                                    Floors:{" "}
+                                                    <strong>
+                                                        {formatNumber(
+                                                            item.floors
+                                                        )}
+                                                    </strong>
+                                                </p>
 
-                        if (!item.location?.lat || !item.location?.lng) {
-                            return null;
-                        }
-
-                        return (
-                            <Marker
-                                key={`incident-${item._id || index}`}
-                                position={[
-                                    item.location.lat,
-                                    item.location.lng
-                                ]}
-                                icon={incidentIcon}
-                            >
-                                <Popup>
-
-                                    <strong>
-                                        🚨 {item.title}
-                                    </strong>
-
-                                    <br />
-
-                                    Type:
-                                    {" "}
-                                    {item.type}
-
-                                    <br />
-
-                                    Priority:
-                                    {" "}
-                                    {item.priority}
-
-                                    <br />
-
-                                    Status:
-                                    {" "}
-                                    {item.status}
-
-                                </Popup>
-                            </Marker>
-                        );
-                    })}
+                                                <p>
+                                                    Occupancy:{" "}
+                                                    <strong>
+                                                        {formatNumber(
+                                                            item.occupancy
+                                                        )}
+                                                    </strong>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </Popup>
+                                </Marker>
+                            );
+                        })}
 
                 </MapContainer>
+
+                {/* MAP STATUS */}
+
+                <div className="pointer-events-none absolute bottom-3 left-3 z-[1000] rounded-lg bg-white/95 px-3 py-2 text-xs shadow-md backdrop-blur-sm">
+                    <div className="flex items-center gap-2">
+                        <span
+                            className={`h-2 w-2 rounded-full ${
+                                connected
+                                    ? "bg-emerald-500"
+                                    : "bg-red-500"
+                            }`}
+                        />
+
+                        <span className="font-semibold text-slate-700">
+                            {connected
+                                ? "Live city data"
+                                : "Waiting for connection"}
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+            {/* LEGEND */}
+
+            <div className="flex flex-wrap gap-x-5 gap-y-2 px-4 py-4 sm:px-5">
+
+                {[
+                    ["Traffic", "#ef4444"],
+                    ["Environment", "#10b981"],
+                    ["Waste", "#f59e0b"],
+                    ["Vehicles", "#3b82f6"],
+                    ["Incidents", "#8b5cf6"],
+                    ["Buildings", "#6366f1"]
+                ].map(([label, color]) => (
+                    <div
+                        key={label}
+                        className="flex items-center gap-2 text-xs font-medium text-slate-500"
+                    >
+                        <span
+                            className="h-2.5 w-2.5 rounded-full"
+                            style={{ backgroundColor: color }}
+                        />
+
+                        {label}
+                    </div>
+                ))}
 
             </div>
 
