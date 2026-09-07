@@ -13,8 +13,15 @@ import Analytics from "./components/Analytics";
 
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-
-
+import CityManagement from "./pages/CityManagement";
+import BuildingsManagement from "./pages/BuildingsManagement";
+import TrafficManagement from "./pages/TrafficManagement"; 
+import VehiclesManagement from "./pages/VehiclesManagement";
+import IncidentsManagement from "./pages/IncidentsManagement";
+import EnvironmentManagement from "./pages/EnvironmentManagement";
+import EnergyManagement from "./pages/EnergyManagement";
+import WaterManagement from "./pages/WaterManagement";
+import WasteManagement from "./pages/WasteManagement";
 function average(items, key) {
     if (!Array.isArray(items) || items.length === 0) {
         return 0;
@@ -48,6 +55,13 @@ function total(items, key) {
 function Dashboard() {
 
     const { user, logout } = useAuth();
+
+    const canManageCity =
+        user?.role === "ADMIN" ||
+        user?.role === "CITY_OPERATOR";
+
+    const isAdmin =
+        user?.role === "ADMIN";
     const { cityData, connected } = useCity();
 
     const data = cityData?.data;
@@ -110,6 +124,116 @@ function Dashboard() {
             data?.water?.pipelinePressure || 0
         );
 
+    /* =========================
+       CRITICAL ALERTS
+    ========================= */
+
+    const criticalIncidents =
+        Array.isArray(data?.incidents)
+            ? data.incidents.filter(
+                incident =>
+                    incident.priority === "CRITICAL" &&
+                    incident.status !== "RESOLVED"
+            )
+            : [];
+
+    const emergencyVehicles =
+        Array.isArray(data?.vehicles)
+            ? data.vehicles.filter(
+                vehicle =>
+                    vehicle.status === "EMERGENCY"
+            )
+            : [];
+
+    const criticalWasteBins =
+        Array.isArray(data?.waste)
+            ? data.waste.filter(
+                bin =>
+                    bin.status === "CRITICAL"
+            )
+            : [];
+
+    const alerts = [];
+
+    criticalIncidents.forEach(incident => {
+        alerts.push({
+            type: "CRITICAL INCIDENT",
+            message: incident.title || "Critical incident reported.",
+            detail: `${incident.incidentId || "Unknown ID"} • ${incident.type || "UNKNOWN"} • ${incident.priority}`,
+            location: incident.location
+                ? `${Number(incident.location.lat).toFixed(4)}, ${Number(incident.location.lng).toFixed(4)}`
+                : "Location unavailable",
+            severity: "CRITICAL",
+            icon: "🚨",
+            link: "/management/incidents"
+        });
+    });
+
+    emergencyVehicles.forEach(vehicle => {
+        alerts.push({
+            type: "EMERGENCY VEHICLE",
+            message: `${vehicle.vehicleId || "Vehicle"} is currently responding.`,
+            detail: `${vehicle.type || "UNKNOWN"} • ${vehicle.status}`,
+            location: vehicle.location
+                ? `${Number(vehicle.location.lat).toFixed(4)}, ${Number(vehicle.location.lng).toFixed(4)}`
+                : "Location unavailable",
+            severity: "CRITICAL",
+            icon: "🚑",
+            link: "/management/vehicles"
+        });
+    });
+
+    criticalWasteBins.forEach(bin => {
+        alerts.push({
+            type: "WASTE ALERT",
+            message: `${bin.binId || "Waste bin"} has reached a critical fill level.`,
+            detail: `Fill level: ${bin.fillLevel || 0}%`,
+            location: bin.location
+                ? `${Number(bin.location.lat).toFixed(4)}, ${Number(bin.location.lng).toFixed(4)}`
+                : "Location unavailable",
+            severity: "HIGH",
+            icon: "🗑️",
+            link: "/management/waste"
+        });
+    });
+
+    if (environmentAQI >= 200) {
+        alerts.push({
+            type: "AIR QUALITY",
+            message: `AQI has reached ${environmentAQI}.`,
+            detail: `PM2.5: ${environmentPM25}`,
+            location: "City-wide monitoring",
+            severity: "CRITICAL",
+            icon: "🌫️",
+            link: "/management/environment"
+        });
+    }
+
+    if (trafficCongestion >= 80) {
+        alerts.push({
+            type: "TRAFFIC ALERT",
+            message: `Traffic congestion has reached ${trafficCongestion}%.`,
+            detail: `Average speed: ${trafficSpeed} km/h`,
+            location: "City-wide traffic network",
+            severity: "HIGH",
+            icon: "🚦",
+            link: "/management/traffic"
+        });
+    }
+
+    if (waterLevel <= 20) {
+        alerts.push({
+            type: "WATER ALERT",
+            message: `Reservoir level is critically low at ${waterLevel}%.`,
+            detail: `Pipeline pressure: ${pipelinePressure}`,
+            location: "City reservoir",
+            severity: "CRITICAL",
+            icon: "💧",
+            link: "/management/water"
+        });
+    }
+
+
     return (
         <div className="min-h-screen w-full overflow-x-hidden bg-slate-950 p-4 text-white sm:p-6 lg:p-8">
 
@@ -129,15 +253,23 @@ function Dashboard() {
                                 Real-time city monitoring system
                             </p>
 
-                            {user && (
-                                <p className="mt-2 text-sm text-slate-500">
-                                    Welcome,{" "}
-                                    <span className="font-semibold text-slate-300">
-                                        {user.name}
-                                    </span>
-                                    {" "}({user.role})
-                                </p>
-                            )}
+                           {user && (
+    <>
+        <p className="mt-2 text-sm text-slate-500">
+            Welcome,{" "}
+            <span className="font-semibold text-slate-300">
+                {user.name}
+            </span>
+            {" "}({user.role})
+        </p>
+
+        {!canManageCity && (
+            <p className="mt-2 text-xs text-slate-400">
+                👁️ Viewer mode — city data management is restricted.
+            </p>
+        )}
+    </>
+)}
 
                         </div>
 
@@ -447,6 +579,251 @@ function Dashboard() {
 
 
                         {/* =========================
+                            CITY OVERVIEW KPIs
+                        ========================= */}
+
+                        <section className="mb-6">
+
+                            <div className="mb-4">
+                                <h2 className="text-xl font-bold text-white">
+                                    City Overview
+                                </h2>
+
+                                <p className="mt-1 text-sm text-slate-500">
+                                    Live summary of major city systems
+                                </p>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+
+                                <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-5">
+                                    <div className="text-2xl">🏢</div>
+                                    <p className="mt-3 text-xs font-medium uppercase tracking-wider text-slate-500">
+                                        Buildings
+                                    </p>
+                                    <p className="mt-1 text-2xl font-bold text-white">
+                                        {data?.buildings?.length || 0}
+                                    </p>
+                                </div>
+
+                                <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-5">
+                                    <div className="text-2xl">🚗</div>
+                                    <p className="mt-3 text-xs font-medium uppercase tracking-wider text-slate-500">
+                                        Vehicles
+                                    </p>
+                                    <p className="mt-1 text-2xl font-bold text-white">
+                                        {data?.vehicles?.length || 0}
+                                    </p>
+                                </div>
+
+                                <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-5">
+                                    <div className="text-2xl">🚨</div>
+                                    <p className="mt-3 text-xs font-medium uppercase tracking-wider text-slate-500">
+                                        Active Incidents
+                                    </p>
+                                    <p className="mt-1 text-2xl font-bold text-white">
+                                        {data?.incidents?.filter(
+                                            incident => incident.status !== "RESOLVED"
+                                        ).length || 0}
+                                    </p>
+                                </div>
+
+                                <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-5">
+                                    <div className="text-2xl">🌫️</div>
+                                    <p className="mt-3 text-xs font-medium uppercase tracking-wider text-slate-500">
+                                        Average AQI
+                                    </p>
+                                    <p className="mt-1 text-2xl font-bold text-white">
+                                        {environmentAQI}
+                                    </p>
+                                </div>
+
+                                <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-5">
+                                    <div className="text-2xl">⚡</div>
+                                    <p className="mt-3 text-xs font-medium uppercase tracking-wider text-slate-500">
+                                        Energy
+                                    </p>
+                                    <p className="mt-1 text-2xl font-bold text-white">
+                                        {energyConsumption}
+                                    </p>
+                                    <p className="text-xs text-slate-500">
+                                        kWh
+                                    </p>
+                                </div>
+
+                                <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-5">
+                                    <div className="text-2xl">💧</div>
+                                    <p className="mt-3 text-xs font-medium uppercase tracking-wider text-slate-500">
+                                        Water Level
+                                    </p>
+                                    <p className="mt-1 text-2xl font-bold text-white">
+                                        {waterLevel}%
+                                    </p>
+                                </div>
+
+                                <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-5">
+                                    <div className="text-2xl">🗑️</div>
+                                    <p className="mt-3 text-xs font-medium uppercase tracking-wider text-slate-500">
+                                        Waste Fill
+                                    </p>
+                                    <p className="mt-1 text-2xl font-bold text-white">
+                                        {wasteFill}%
+                                    </p>
+                                </div>
+
+                                <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-5">
+                                    <div className="text-2xl">🚦</div>
+                                    <p className="mt-3 text-xs font-medium uppercase tracking-wider text-slate-500">
+                                        Traffic
+                                    </p>
+                                    <p className="mt-1 text-2xl font-bold text-white">
+                                        {trafficCongestion}%
+                                    </p>
+                                </div>
+
+                            </div>
+
+                        </section>
+
+
+                        {/* =========================
+                            CRITICAL ALERTS
+                        ========================= */}
+
+                        <section className="mt-6">
+
+                            <div className="mb-4 flex items-center justify-between">
+
+                                <div>
+                                    <h2 className="text-xl font-bold">
+                                        Critical Alerts
+                                    </h2>
+
+                                    <p className="mt-1 text-sm text-slate-500">
+                                        Real-time city system alerts
+                                    </p>
+                                </div>
+
+                                <div
+                                    className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                                        alerts.length > 0
+                                            ? "bg-red-500/10 text-red-400"
+                                            : "bg-green-500/10 text-green-400"
+                                    }`}
+                                >
+                                    {alerts.length > 0
+                                        ? `${alerts.length} ACTIVE`
+                                        : "ALL CLEAR"
+                                    }
+                                </div>
+
+                            </div>
+
+                            {alerts.length === 0 ? (
+
+                                <div className="rounded-2xl border border-green-500/20 bg-green-500/5 p-6 text-center">
+
+                                    <div className="text-4xl">
+                                        ✅
+                                    </div>
+
+                                    <h3 className="mt-3 font-semibold text-green-400">
+                                        No Critical Alerts
+                                    </h3>
+
+                                    <p className="mt-1 text-sm text-slate-500">
+                                        All monitored city systems are operating normally.
+                                    </p>
+
+                                </div>
+
+                            ) : (
+
+                                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+
+                                    {alerts.map((alert, index) => (
+
+                                        <button
+                                            key={`${alert.type}-${index}`}
+                                            type="button"
+                                            onClick={() => {
+                                                if (alert.link) {
+                                                    window.location.href = alert.link;
+                                                }
+                                            }}
+                                            className="w-full rounded-2xl border border-red-500/20 bg-red-500/5 p-5 text-left transition hover:border-red-500/40 hover:bg-red-500/10"
+                                        >
+
+                                            <div className="flex items-start gap-4">
+
+                                                <div className="text-3xl">
+                                                    {alert.icon}
+                                                </div>
+
+                                                <div className="min-w-0 flex-1">
+
+                                                    <div className="flex flex-wrap items-center justify-between gap-2">
+
+                                                        <h3 className="font-bold text-red-400">
+                                                            {alert.type}
+                                                        </h3>
+
+                                                        <span
+                                                            className={`rounded-full px-2 py-1 text-[10px] font-bold ${
+                                                                alert.severity === "CRITICAL"
+                                                                    ? "bg-red-500/20 text-red-300"
+                                                                    : "bg-orange-500/20 text-orange-300"
+                                                            }`}
+                                                        >
+                                                            {alert.severity}
+                                                        </span>
+
+                                                    </div>
+
+                                                    <p className="mt-2 text-sm font-medium text-slate-200">
+                                                        {alert.message}
+                                                    </p>
+
+                                                    <p className="mt-2 text-xs text-slate-400">
+                                                        {alert.detail}
+                                                    </p>
+
+                                                    <div className="mt-3 flex items-center gap-2 text-xs text-slate-500">
+
+                                                        <span>
+                                                            📍
+                                                        </span>
+
+                                                        <span className="truncate">
+                                                            {alert.location}
+                                                        </span>
+
+                                                    </div>
+
+                                                    <div className="mt-3">
+
+                                                        <span className="inline-flex rounded-full bg-red-500/10 px-2 py-1 text-[10px] font-semibold text-red-400">
+                                                            ACTIVE
+                                                        </span>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </button>
+
+                                    ))}
+
+                                </div>
+
+                            )}
+
+                        </section>
+
+
+                        {/* =========================
                             CITY MAP
                         ========================= */}
 
@@ -553,6 +930,94 @@ function App() {
                         user
                             ? <Navigate to="/" replace />
                             : <Register />
+                    }
+                />
+
+
+                {/* BUILDINGS MANAGEMENT */}
+
+                <Route
+                    path="/management/buildings"
+                    element={
+                        user
+                            ? <BuildingsManagement />
+                            : <Navigate to="/login" replace />
+                    }
+                />
+                <Route
+    path="/management/traffic"
+    element={
+        user
+            ? <TrafficManagement />
+            : <Navigate to="/login" replace />
+    }
+/>
+<Route
+    path="/management/vehicles"
+    element={
+        user
+            ? <VehiclesManagement />
+            : <Navigate to="/login" replace />
+    }
+/>
+<Route
+    path="/management/incidents"
+    element={<IncidentsManagement />}
+/>
+
+
+                {/* ENVIRONMENT MANAGEMENT */}
+
+                <Route
+                    path="/management/environment"
+                    element={
+                        user
+                            ? <EnvironmentManagement />
+                            : <Navigate to="/login" replace />
+                    }
+                />
+
+                {/* ENERGY MANAGEMENT */}
+
+                <Route
+                    path="/management/energy"
+                    element={
+                        user
+                            ? <EnergyManagement />
+                            : <Navigate to="/login" replace />
+                    }
+                />
+
+                {/* WATER MANAGEMENT */}
+
+                <Route
+                    path="/management/water"
+                    element={
+                        user
+                            ? <WaterManagement />
+                            : <Navigate to="/login" replace />
+                    }
+                />
+
+                {/* WASTE MANAGEMENT */}
+
+                <Route
+                    path="/management/waste"
+                    element={
+                        user
+                            ? <WasteManagement />
+                            : <Navigate to="/login" replace />
+                    }
+                />
+
+                {/* CITY MANAGEMENT */}
+
+                <Route
+                    path="/management"
+                    element={
+                        user
+                            ? <CityManagement />
+                            : <Navigate to="/login" replace />
                     }
                 />
 
