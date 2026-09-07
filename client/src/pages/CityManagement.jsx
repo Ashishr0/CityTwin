@@ -152,6 +152,25 @@ const CityManagement = () => {
                     </button>
                 </div>
 
+                {/* WASTE */}
+
+                <div className="rounded-xl bg-slate-800 p-6">
+                    <h2 className="text-xl font-semibold">
+                        Waste
+                    </h2>
+
+                    <p className="mt-2 text-slate-400">
+                        Manage city waste data.
+                    </p>
+
+                    <button
+                        onClick={() => navigate("/management/waste")}
+                        className="mt-4 rounded-lg bg-blue-600 px-4 py-2 hover:bg-blue-700"
+                    >
+                        Manage
+                    </button>
+                </div>
+
                 {/* INCIDENTS */}
 
                 <div className="rounded-xl bg-slate-800 p-6">
