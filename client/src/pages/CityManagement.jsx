@@ -95,6 +95,44 @@ const CityManagement = () => {
                 </div>
 
 
+                {/* ENVIRONMENT */}
+
+                <div className="rounded-xl bg-slate-800 p-6">
+                    <h2 className="text-xl font-semibold">
+                        Environment
+                    </h2>
+
+                    <p className="mt-2 text-slate-400">
+                        Manage environmental data.
+                    </p>
+
+                    <button
+                        onClick={() => navigate("/management/environment")}
+                        className="mt-4 rounded-lg bg-blue-600 px-4 py-2 hover:bg-blue-700"
+                    >
+                        Manage
+                    </button>
+                </div>
+
+                {/* ENERGY */}
+
+                <div className="rounded-xl bg-slate-800 p-6">
+                    <h2 className="text-xl font-semibold">
+                        Energy
+                    </h2>
+
+                    <p className="mt-2 text-slate-400">
+                        Manage city energy data.
+                    </p>
+
+                    <button
+                        onClick={() => navigate("/management/energy")}
+                        className="mt-4 rounded-lg bg-blue-600 px-4 py-2 hover:bg-blue-700"
+                    >
+                        Manage
+                    </button>
+                </div>
+
                 {/* INCIDENTS */}
 
                 <div className="rounded-xl bg-slate-800 p-6">

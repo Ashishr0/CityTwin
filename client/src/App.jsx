@@ -18,6 +18,8 @@ import BuildingsManagement from "./pages/BuildingsManagement";
 import TrafficManagement from "./pages/TrafficManagement"; 
 import VehiclesManagement from "./pages/VehiclesManagement";
 import IncidentsManagement from "./pages/IncidentsManagement";
+import EnvironmentManagement from "./pages/EnvironmentManagement";
+import EnergyManagement from "./pages/EnergyManagement";
 function average(items, key) {
     if (!Array.isArray(items) || items.length === 0) {
         return 0;
@@ -606,6 +608,28 @@ function App() {
     element={<IncidentsManagement />}
 />
 
+
+                {/* ENVIRONMENT MANAGEMENT */}
+
+                <Route
+                    path="/management/environment"
+                    element={
+                        user
+                            ? <EnvironmentManagement />
+                            : <Navigate to="/login" replace />
+                    }
+                />
+
+                {/* ENERGY MANAGEMENT */}
+
+                <Route
+                    path="/management/energy"
+                    element={
+                        user
+                            ? <EnergyManagement />
+                            : <Navigate to="/login" replace />
+                    }
+                />
 
                 {/* CITY MANAGEMENT */}
 
