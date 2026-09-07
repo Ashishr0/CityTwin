@@ -20,6 +20,7 @@ import VehiclesManagement from "./pages/VehiclesManagement";
 import IncidentsManagement from "./pages/IncidentsManagement";
 import EnvironmentManagement from "./pages/EnvironmentManagement";
 import EnergyManagement from "./pages/EnergyManagement";
+import WaterManagement from "./pages/WaterManagement";
 function average(items, key) {
     if (!Array.isArray(items) || items.length === 0) {
         return 0;
@@ -627,6 +628,17 @@ function App() {
                     element={
                         user
                             ? <EnergyManagement />
+                            : <Navigate to="/login" replace />
+                    }
+                />
+
+                {/* WATER MANAGEMENT */}
+
+                <Route
+                    path="/management/water"
+                    element={
+                        user
+                            ? <WaterManagement />
                             : <Navigate to="/login" replace />
                     }
                 />
