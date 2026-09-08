@@ -62,10 +62,8 @@ const TrafficManagement = () => {
     };
 
     useEffect(() => {
-        if (token) {
-            fetchTraffic();
-        }
-    }, [token]);
+        fetchTraffic();
+    }, []);
 
     // =========================
     // INPUT
@@ -283,50 +281,6 @@ const TrafficManagement = () => {
 
         return "bg-slate-100 text-slate-700 border-slate-200";
     };
-
-    // =========================
-    // ACCESS CONTROL
-    // =========================
-
-    if (!user) {
-        return (
-            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-                <div className="rounded-2xl  bg-white px-8 py-7 text-center shadow-sm">
-                    <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-xl">
-                        🔐
-                    </div>
-
-                    <h1 className="text-lg font-bold text-slate-800">
-                        Login Required
-                    </h1>
-
-                    <p className="mt-1 text-sm text-slate-600">
-                        Please login to continue.
-                    </p>
-                </div>
-            </div>
-        );
-    }
-
-    if (!canManage) {
-        return (
-            <div className="min-h-screen bg-slate-50 p-6">
-                <div className="mx-auto max-w-5xl rounded-2xl  bg-white p-8 shadow-sm">
-                    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-red-50 text-xl">
-                        🚫
-                    </div>
-
-                    <h1 className="text-2xl font-bold text-slate-800">
-                        Traffic Management
-                    </h1>
-
-                    <p className="mt-2 text-sm text-red-500">
-                        You do not have permission to manage traffic data.
-                    </p>
-                </div>
-            </div>
-        );
-    }
 
     return (
         <div className="min-h-screen bg-slate-50 p-4 sm:p-6">

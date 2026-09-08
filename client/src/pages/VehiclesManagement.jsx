@@ -59,10 +59,8 @@ const VehiclesManagement = () => {
     };
 
     useEffect(() => {
-        if (token) {
-            fetchVehicles();
-        }
-    }, [token]);
+        fetchVehicles();
+    }, []);
 
     // HANDLE INPUT
     const handleChange = (e) => {
@@ -187,31 +185,6 @@ const VehiclesManagement = () => {
             );
         }
     };
-
-    // ACCESS CONTROL
-    if (!user) {
-        return (
-            <div className="min-h-screen bg-slate-50 text-slate-900 flex items-center justify-center">
-                <p>Please login to continue.</p>
-            </div>
-        );
-    }
-
-    if (!canManage) {
-        return (
-            <div className="min-h-screen bg-slate-50 text-slate-900 p-4 sm:p-6">
-                <div className="mx-auto w-full max-w-5xl rounded-xl bg-white p-8 shadow-sm">
-                    <h1 className="text-3xl font-bold mb-4">
-                        Vehicles Management
-                    </h1>
-
-                    <p className="text-red-400">
-                        You do not have permission to manage vehicles.
-                    </p>
-                </div>
-            </div>
-        );
-    }
 
     return (
         <div className="min-h-screen bg-slate-50 p-4 sm:p-6">

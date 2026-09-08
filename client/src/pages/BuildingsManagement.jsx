@@ -221,22 +221,6 @@ const BuildingsManagement = () => {
         (building) => building.status === "NORMAL"
     ).length;
 
-    if (!canManage) {
-        return (
-            <div className="min-h-screen bg-slate-50 p-6 text-slate-900">
-                <div className="mx-auto max-w-7xl rounded-2xl bg-white p-8 shadow-sm">
-                    <h1 className="text-3xl font-bold">
-                        Access Denied
-                    </h1>
-
-                    <p className="mt-3 text-slate-500">
-                        All users can manage buildings.
-                    </p>
-                </div>
-            </div>
-        );
-    }
-
     return (
         <div className="min-h-screen w-full overflow-x-hidden bg-slate-50 p-3 sm:p-5 lg:p-6">
             <div className="mx-auto w-full max-w-7xl min-w-0">

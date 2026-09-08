@@ -109,22 +109,6 @@ const CityManagement = () => {
         }
     };
 
-    if (!canManage) {
-        return (
-            <div className="min-h-screen bg-slate-50 p-4 sm:p-6">
-                <div className="mx-auto max-w-2xl rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-                    <h1 className="text-2xl font-bold text-slate-900">
-                        Access Denied
-                    </h1>
-
-                    <p className="mt-3 text-sm leading-6 text-slate-500">
-                        You do not have permission to manage city data.
-                    </p>
-                </div>
-            </div>
-        );
-    }
-
     return (
         <div className="min-h-screen w-full overflow-x-hidden bg-slate-50 px-3 py-4 sm:px-5 sm:py-6 lg:px-8">
 

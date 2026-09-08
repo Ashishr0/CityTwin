@@ -57,10 +57,8 @@ const IncidentsManagement = () => {
     };
 
     useEffect(() => {
-        if (token) {
-            fetchIncidents();
-        }
-    }, [token]);
+        fetchIncidents();
+    }, []);
 
     // Handle form input
     const handleChange = (e) => {
@@ -91,11 +89,6 @@ const IncidentsManagement = () => {
     // Create / Update
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        if (!canManage) {
-            setError("You do not have permission to manage incidents.");
-            return;
-        }
 
         try {
             setMessage("");
@@ -172,11 +165,6 @@ const IncidentsManagement = () => {
 
     // Delete incident
     const handleDelete = async (id) => {
-        if (!canManage) {
-            setError("You do not have permission to delete incidents.");
-            return;
-        }
-
         const confirmed = window.confirm(
             "Are you sure you want to delete this incident?"
         );
@@ -205,22 +193,6 @@ const IncidentsManagement = () => {
             );
         }
     };
-
-    if (!user) {
-        return (
-            <div className="min-h-screen bg-slate-50 p-4 text-slate-900 sm:p-6">
-                <div className="mx-auto w-full max-w-7xl min-w-0">
-                    <h1 className="text-3xl font-bold">
-                        Incidents Management
-                    </h1>
-
-                    <p className="mt-4 text-slate-400">
-                        Please login to access incident management.
-                    </p>
-                </div>
-            </div>
-        );
-    }
 
     return (
         <div className="min-h-screen w-full overflow-x-hidden bg-slate-50 p-3 sm:p-5 lg:p-6">
