@@ -19,7 +19,7 @@ const WasteManagement = () => {
 
     const fetchWaste = async () => {
         try {
-            const response = await fetch("http://localhost:5000/api/waste", {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/waste`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -82,8 +82,8 @@ const WasteManagement = () => {
 
         try {
             const url = editingId
-                ? `http://localhost:5000/api/waste/${editingId}`
-                : "http://localhost:5000/api/waste";
+                ? `${import.meta.env.VITE_API_URL}/waste/${editingId}`
+                : `${import.meta.env.VITE_API_URL}/waste`;
 
             const method = editingId ? "PUT" : "POST";
 
@@ -148,7 +148,7 @@ const WasteManagement = () => {
 
         try {
             const response = await fetch(
-                `http://localhost:5000/api/waste/${id}`,
+                `${import.meta.env.VITE_API_URL}/waste/${id}`,
                 {
                     method: "DELETE",
                     headers: {

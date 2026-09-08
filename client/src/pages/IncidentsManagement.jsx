@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthContext";
 
 const API_URL =
     import.meta.env.VITE_API_URL ||
-    "http://localhost:5000/api";
+    import.meta.env.VITE_API_URL;
 
 const IncidentsManagement = () => {
     const { user, token } = useAuth();

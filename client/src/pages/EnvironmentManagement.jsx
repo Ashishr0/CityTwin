@@ -21,7 +21,7 @@ const EnvironmentManagement = () => {
     const fetchEnvironmentData = async () => {
         try {
             const response = await fetch(
-                "http://localhost:5000/api/environment",
+                `${import.meta.env.VITE_API_URL}/environment`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`
@@ -77,8 +77,8 @@ const EnvironmentManagement = () => {
 
         try {
             const url = editingId
-                ? `http://localhost:5000/api/environment/${editingId}`
-                : "http://localhost:5000/api/environment";
+                ? `${import.meta.env.VITE_API_URL}/environment/${editingId}`
+                : `${import.meta.env.VITE_API_URL}/environment`;
 
             const method = editingId ? "PUT" : "POST";
 
@@ -153,7 +153,7 @@ const EnvironmentManagement = () => {
 
         try {
             const response = await fetch(
-                `http://localhost:5000/api/environment/${id}`,
+                `${import.meta.env.VITE_API_URL}/environment/${id}`,
                 {
                     method: "DELETE",
                     headers: {

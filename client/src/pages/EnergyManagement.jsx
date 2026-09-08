@@ -20,7 +20,7 @@ const EnergyManagement = () => {
     const fetchEnergyData = async () => {
         try {
             const response = await fetch(
-                "http://localhost:5000/api/energy",
+                `${import.meta.env.VITE_API_URL}/energy`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`
@@ -75,8 +75,8 @@ const EnergyManagement = () => {
 
         try {
             const url = editingId
-                ? `http://localhost:5000/api/energy/${editingId}`
-                : "http://localhost:5000/api/energy";
+                ? `${import.meta.env.VITE_API_URL}/energy/${editingId}`
+                : `${import.meta.env.VITE_API_URL}/energy`;
 
             const method = editingId ? "PUT" : "POST";
 
@@ -152,7 +152,7 @@ const EnergyManagement = () => {
 
         try {
             const response = await fetch(
-                `http://localhost:5000/api/energy/${id}`,
+                `${import.meta.env.VITE_API_URL}/energy/${id}`,
                 {
                     method: "DELETE",
                     headers: {
