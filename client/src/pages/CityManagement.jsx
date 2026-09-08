@@ -5,9 +5,7 @@ const CityManagement = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
 
-    const canManage =
-        user?.role === "ADMIN" ||
-        user?.role === "CITY_OPERATOR";
+    const canManage = true;
 
     const modules = [
         {

@@ -28,9 +28,7 @@ const VehiclesManagement = () => {
         lng: ""
     });
 
-    const canManage =
-        user?.role === "ADMIN" ||
-        user?.role === "CITY_OPERATOR";
+    const canManage = true;
 
     const config = {
         headers: {

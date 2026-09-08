@@ -8,48 +8,33 @@ const {
     deleteIncident
 } = require("../controllers/incidentController");
 
-const {
-    protect,
-    authorizeRoles
-} = require("../middleware/authMiddleware");
-
 const router = express.Router();
 
 
 // VIEW INCIDENTS
-// ADMIN, CITY_OPERATOR, VIEWER
-router.get("/", protect, getIncidents);
+router.get("/", getIncidents);
 
-router.get("/:id", protect, getIncidentById);
+router.get("/:id", getIncidentById);
 
 
 // CREATE INCIDENT
-// ADMIN, CITY_OPERATOR only
 router.post(
     "/",
-    protect,
-    authorizeRoles("ADMIN", "CITY_OPERATOR"),
-    createIncident
+createIncident
 );
 
 
 // UPDATE INCIDENT
-// ADMIN, CITY_OPERATOR only
 router.put(
     "/:id",
-    protect,
-    authorizeRoles("ADMIN", "CITY_OPERATOR"),
-    updateIncident
+updateIncident
 );
 
 
 // DELETE INCIDENT
-// ADMIN, CITY_OPERATOR only
 router.delete(
     "/:id",
-    protect,
-    authorizeRoles("ADMIN", "CITY_OPERATOR"),
-    deleteIncident
+deleteIncident
 );
 
 

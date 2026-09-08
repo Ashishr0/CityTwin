@@ -8,48 +8,33 @@ const {
     deleteBuilding
 } = require("../controllers/buildingController");
 
-const {
-    protect,
-    authorizeRoles
-} = require("../middleware/authMiddleware");
-
 const router = express.Router();
 
 
 // VIEW BUILDINGS
-// ADMIN, CITY_OPERATOR, VIEWER
-router.get("/", protect, getBuildings);
+router.get("/", getBuildings);
 
-router.get("/:id", protect, getBuildingById);
+router.get("/:id", getBuildingById);
 
 
 // CREATE BUILDING
-// ADMIN, CITY_OPERATOR only
 router.post(
     "/",
-    protect,
-    authorizeRoles("ADMIN", "CITY_OPERATOR"),
-    createBuilding
+createBuilding
 );
 
 
 // UPDATE BUILDING
-// ADMIN, CITY_OPERATOR only
 router.put(
     "/:id",
-    protect,
-    authorizeRoles("ADMIN", "CITY_OPERATOR"),
-    updateBuilding
+updateBuilding
 );
 
 
 // DELETE BUILDING
-// ADMIN, CITY_OPERATOR only
 router.delete(
     "/:id",
-    protect,
-    authorizeRoles("ADMIN", "CITY_OPERATOR"),
-    deleteBuilding
+deleteBuilding
 );
 
 

@@ -8,48 +8,33 @@ const {
     deleteWaste
 } = require("../controllers/wasteController");
 
-const {
-    protect,
-    authorizeRoles
-} = require("../middleware/authMiddleware");
-
 const router = express.Router();
 
 
 // VIEW WASTE DATA
-// ADMIN, CITY_OPERATOR, VIEWER
-router.get("/", protect, getWaste);
+router.get("/", getWaste);
 
-router.get("/:id", protect, getWasteById);
+router.get("/:id", getWasteById);
 
 
 // CREATE WASTE DATA
-// ADMIN, CITY_OPERATOR only
 router.post(
     "/",
-    protect,
-    authorizeRoles("ADMIN", "CITY_OPERATOR"),
-    createWaste
+createWaste
 );
 
 
 // UPDATE WASTE DATA
-// ADMIN, CITY_OPERATOR only
 router.put(
     "/:id",
-    protect,
-    authorizeRoles("ADMIN", "CITY_OPERATOR"),
-    updateWaste
+updateWaste
 );
 
 
 // DELETE WASTE DATA
-// ADMIN, CITY_OPERATOR only
 router.delete(
     "/:id",
-    protect,
-    authorizeRoles("ADMIN", "CITY_OPERATOR"),
-    deleteWaste
+deleteWaste
 );
 
 

@@ -8,48 +8,33 @@ const {
     deleteVehicle
 } = require("../controllers/vehicleController");
 
-const {
-    protect,
-    authorizeRoles
-} = require("../middleware/authMiddleware");
-
 const router = express.Router();
 
 
 // VIEW VEHICLES
-// ADMIN, CITY_OPERATOR, VIEWER
-router.get("/", protect, getVehicles);
+router.get("/", getVehicles);
 
-router.get("/:id", protect, getVehicleById);
+router.get("/:id", getVehicleById);
 
 
 // CREATE VEHICLE
-// ADMIN, CITY_OPERATOR only
 router.post(
     "/",
-    protect,
-    authorizeRoles("ADMIN", "CITY_OPERATOR"),
-    createVehicle
+createVehicle
 );
 
 
 // UPDATE VEHICLE
-// ADMIN, CITY_OPERATOR only
 router.put(
     "/:id",
-    protect,
-    authorizeRoles("ADMIN", "CITY_OPERATOR"),
-    updateVehicle
+updateVehicle
 );
 
 
 // DELETE VEHICLE
-// ADMIN, CITY_OPERATOR only
 router.delete(
     "/:id",
-    protect,
-    authorizeRoles("ADMIN", "CITY_OPERATOR"),
-    deleteVehicle
+deleteVehicle
 );
 
 

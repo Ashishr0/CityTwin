@@ -8,48 +8,33 @@ const {
     deleteTraffic
 } = require("../controllers/trafficController");
 
-const {
-    protect,
-    authorizeRoles
-} = require("../middleware/authMiddleware");
-
 const router = express.Router();
 
 
 // VIEW TRAFFIC
-// ADMIN, CITY_OPERATOR, VIEWER
-router.get("/", protect, getTraffic);
+router.get("/", getTraffic);
 
-router.get("/:id", protect, getTrafficById);
+router.get("/:id", getTrafficById);
 
 
 // CREATE TRAFFIC
-// ADMIN, CITY_OPERATOR only
 router.post(
     "/",
-    protect,
-    authorizeRoles("ADMIN", "CITY_OPERATOR"),
-    createTraffic
+createTraffic
 );
 
 
 // UPDATE TRAFFIC
-// ADMIN, CITY_OPERATOR only
 router.put(
     "/:id",
-    protect,
-    authorizeRoles("ADMIN", "CITY_OPERATOR"),
-    updateTraffic
+updateTraffic
 );
 
 
 // DELETE TRAFFIC
-// ADMIN, CITY_OPERATOR only
 router.delete(
     "/:id",
-    protect,
-    authorizeRoles("ADMIN", "CITY_OPERATOR"),
-    deleteTraffic
+deleteTraffic
 );
 
 

@@ -30,9 +30,7 @@ const BuildingsManagement = () => {
     const [error, setError] = useState("");
     const [search, setSearch] = useState("");
 
-    const canManage =
-        user?.role === "ADMIN" ||
-        user?.role === "CITY_OPERATOR";
+    const canManage = true;
 
     const config = {
         headers: {
@@ -232,7 +230,7 @@ const BuildingsManagement = () => {
                     </h1>
 
                     <p className="mt-3 text-slate-500">
-                        Only ADMIN and CITY_OPERATOR users can manage buildings.
+                        All users can manage buildings.
                     </p>
                 </div>
             </div>

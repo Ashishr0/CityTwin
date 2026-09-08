@@ -119,38 +119,22 @@ function App() {
 
                 <Route
                     path="/map"
-                    element={
-                        user
-                            ? <MapPage />
-                            : <Navigate to="/login" replace />
-                    }
+                    element={<MapPage />}
                 />
 
                 {/* BUILDINGS MANAGEMENT */}
 
                 <Route
                     path="/management/buildings"
-                    element={
-                        user
-                            ? <BuildingsManagement />
-                            : <Navigate to="/login" replace />
-                    }
+                    element={<BuildingsManagement />}
                 />
                 <Route
     path="/management/traffic"
-    element={
-        user
-            ? <TrafficManagement />
-            : <Navigate to="/login" replace />
-    }
+    element={<TrafficManagement />}
 />
 <Route
     path="/management/vehicles"
-    element={
-        user
-            ? <VehiclesManagement />
-            : <Navigate to="/login" replace />
-    }
+    element={<VehiclesManagement />}
 />
 <Route
     path="/management/incidents"
@@ -162,55 +146,35 @@ function App() {
 
                 <Route
                     path="/management/environment"
-                    element={
-                        user
-                            ? <EnvironmentManagement />
-                            : <Navigate to="/login" replace />
-                    }
+                    element={<EnvironmentManagement />}
                 />
 
                 {/* ENERGY MANAGEMENT */}
 
                 <Route
                     path="/management/energy"
-                    element={
-                        user
-                            ? <EnergyManagement />
-                            : <Navigate to="/login" replace />
-                    }
+                    element={<EnergyManagement />}
                 />
 
                 {/* WATER MANAGEMENT */}
 
                 <Route
                     path="/management/water"
-                    element={
-                        user
-                            ? <WaterManagement />
-                            : <Navigate to="/login" replace />
-                    }
+                    element={<WaterManagement />}
                 />
 
                 {/* WASTE MANAGEMENT */}
 
                 <Route
                     path="/management/waste"
-                    element={
-                        user
-                            ? <WasteManagement />
-                            : <Navigate to="/login" replace />
-                    }
+                    element={<WasteManagement />}
                 />
 
                 {/* CITY MANAGEMENT */}
 
                 <Route
                     path="/management"
-                    element={
-                        user
-                            ? <CityManagement />
-                            : <Navigate to="/login" replace />
-                    }
+                    element={<CityManagement />}
                 />
 
 
@@ -218,11 +182,7 @@ function App() {
 
                 <Route
                     path="/alerts"
-                    element={
-                        user
-                            ? <Alerts />
-                            : <Navigate to="/login" replace />
-                    }
+                    element={<Alerts />}
                 />
 
 
@@ -230,11 +190,7 @@ function App() {
 
                 <Route
                     path="/"
-                    element={
-                        user
-                            ? <Dashboard />
-                            : <Navigate to="/login" replace />
-                    }
+                    element={<Dashboard />}
                 />
 
 

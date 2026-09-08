@@ -8,48 +8,33 @@ const {
     deleteEnvironment
 } = require("../controllers/environmentController");
 
-const {
-    protect,
-    authorizeRoles
-} = require("../middleware/authMiddleware");
-
 const router = express.Router();
 
 
 // VIEW ENVIRONMENT DATA
-// ADMIN, CITY_OPERATOR, VIEWER
-router.get("/", protect, getEnvironment);
+router.get("/", getEnvironment);
 
-router.get("/:id", protect, getEnvironmentById);
+router.get("/:id", getEnvironmentById);
 
 
 // CREATE ENVIRONMENT DATA
-// ADMIN, CITY_OPERATOR only
 router.post(
     "/",
-    protect,
-    authorizeRoles("ADMIN", "CITY_OPERATOR"),
-    createEnvironment
+createEnvironment
 );
 
 
 // UPDATE ENVIRONMENT DATA
-// ADMIN, CITY_OPERATOR only
 router.put(
     "/:id",
-    protect,
-    authorizeRoles("ADMIN", "CITY_OPERATOR"),
-    updateEnvironment
+updateEnvironment
 );
 
 
 // DELETE ENVIRONMENT DATA
-// ADMIN, CITY_OPERATOR only
 router.delete(
     "/:id",
-    protect,
-    authorizeRoles("ADMIN", "CITY_OPERATOR"),
-    deleteEnvironment
+deleteEnvironment
 );
 
 
