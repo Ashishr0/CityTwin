@@ -1,573 +1,392 @@
-# CityTwin
+# 🏙️ CityTwin — Smart City Digital Twin
 
-A real-time smart city digital twin and monitoring platform built with
-the MERN stack and Socket.IO.
+> A real-time smart-city monitoring and management platform built with the MERN stack, Socket.IO, and MongoDB.
 
-# Overview
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-CityTwin-blue?style=for-the-badge)](https://citytwin-2.onrender.com)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-black?style=for-the-badge\&logo=github)](https://github.com/Ashishr0/CityTwin)
+[![React](https://img.shields.io/badge/Frontend-React-61DAFB?style=for-the-badge\&logo=react\&logoColor=black)](https://react.dev/)
+[![Node.js](https://img.shields.io/badge/Backend-Node.js-339933?style=for-the-badge\&logo=node.js\&logoColor=white)](https://nodejs.org/)
+[![MongoDB](https://img.shields.io/badge/Database-MongoDB-47A248?style=for-the-badge\&logo=mongodb\&logoColor=white)](https://www.mongodb.com/)
+[![Socket.IO](https://img.shields.io/badge/Real--Time-Socket.IO-010101?style=for-the-badge\&logo=socket.io)](https://socket.io/)
 
-CityTwin is a full-stack smart city monitoring and digital twin
-platform designed to digitally represent and monitor important city
-infrastructure and services through a centralized dashboard.
+---
 
-The platform combines CRUD-based management, real-time simulation,
-interactive maps, analytics, authentication, and automated alerts into
-one application.
+## 🌐 Live Application
 
-# Objectives
+### [Live App](https://citytwin-2.onrender.com)
 
-Build a centralized smart-city monitoring platform.
+CityTwin is deployed using **Render**.
 
-Digitally represent major city infrastructure and services.
+The application provides a real-time digital view of a smart city, including:
 
-Provide CRUD management for city systems.
+* 🏢 Buildings
+* 🚦 Traffic
+* 🚗 Vehicles
+* 🚨 Incidents
+* 🌱 Environment
+* ⚡ Energy
+* 💧 Water
+* ♻️ Waste
+* 🗺️ Interactive city map
+* 📊 Live analytics
+* 🔔 Real-time alerts
 
-Display live city conditions through Socket.IO.
+> **Note:** The Render free tier may take some time to wake up after a period of inactivity.
 
-Simulate changing city data in real time.
+---
 
-Generate alerts when critical thresholds are reached.
+## 📌 About the Project
 
-Provide map-based visualization of city entities.
+**CityTwin** is a full-stack smart-city digital twin system designed to monitor and manage different city components from a centralized web application.
 
-Implement authentication and role-based access control.
+The platform combines traditional CRUD-based city management with **real-time simulation using Socket.IO**.
 
-Present city analytics through an interactive dashboard.
+The dashboard continuously receives simulated city updates, allowing users to observe changing:
 
-# Features
-# Authentication & Authorization
-    JWT-based authentication
-    Protected routes
-    Role-based access control
+* Traffic congestion
+* Vehicle positions
+* Air quality
+* Temperature
+* Energy consumption
+* Water levels
+* Waste levels
+* City alerts
 
-# Admin login
-    City operator access support
-    Buildings Management
-    Manage city buildings with:
-    Create
-    Read
-    Update
-    Delete
-    Building details and location
+The goal is to demonstrate how a digital-twin architecture can combine **data management, visualization, simulation, real-time communication, and interactive monitoring** in a single application.
 
-# Traffic Management
-    Manage and monitor traffic intersections:
-    Intersection information
-    Traffic congestion
-    Average speed
-    Traffic status
-    Location data
+---
 
-# Vehicles Management
-    Manage city vehicles:
-    Vehicle ID
-    Vehicle type
-     Status
-     Location
-    Real-time vehicle movement simulation
+## ✨ Features
 
-🚨 Incidents Management
+### 📊 Real-Time Dashboard
 
-Manage city incidents:
+The dashboard provides a live overview of the city.
 
-Incident details
+It displays:
 
-Priority
+* Traffic statistics
+* Air Quality Index (AQI)
+* Temperature
+* Energy consumption
+* Water levels
+* Waste levels
+* Vehicle activity
+* Incident statistics
+* Live analytics
 
-Status
+City data is updated automatically through **Socket.IO**.
 
-Location
+---
 
-Reporter information
+### 🏢 Buildings Management
 
-Incidents are also displayed on the interactive city map.
+Manage city buildings through CRUD operations.
 
-🌱 Environment Management
+Supported operations:
 
-Monitor environmental conditions:
+* Create building
+* View buildings
+* Update building
+* Delete building
+* Track building location
+* Track occupancy
+* Track energy consumption
+* Track water consumption
+* Track building status
 
-AQI
+---
 
-Temperature
+### 🚦 Traffic Management
 
-Humidity
+Monitor and manage traffic information including:
 
-Sensor information
+* Traffic congestion
+* Average speed
+* Road information
+* Traffic status
+* Location data
 
-Location
+---
 
-⚡ Energy Management
+### 🚗 Vehicle Management
 
-Monitor city energy data:
+Manage city vehicles with information such as:
 
-Energy consumption
+* Vehicle ID
+* Vehicle type
+* Status
+* Speed
+* Location
+* Emergency status
 
-Renewable energy percentage
+Vehicle locations are also visualized on the city map.
 
-Energy source
+---
 
-Energy measurements
+### 🚨 Incident Management
 
-💧 Water Management
+Track and manage city incidents.
 
-Monitor water infrastructure:
+Features include:
 
-Reservoir level
+* Incident creation
+* Incident updates
+* Incident deletion
+* Priority levels
+* Incident status
+* Location
+* Reporter information
 
-Daily consumption
+Incidents are also represented on the map.
 
-Water quality
+---
 
-Water system information
+### 🌱 Environment Management
 
-♻️ Waste Management
+Monitor environmental conditions such as:
 
-Monitor waste infrastructure:
+* AQI
+* Temperature
+* Humidity
+* Sensor information
+* Location
 
-Waste bin information
+---
 
-Fill level
+### ⚡ Energy Management
 
-Collection status
+Manage energy monitoring data including:
 
-Location
+* Energy consumption
+* Renewable energy percentage
+* Energy source
+* Location
+* Status
 
-Critical bin detection
+---
 
-📊 Live Dashboard
+### 💧 Water Management
 
-The dashboard provides a centralized real-time view of:
+Monitor water infrastructure including:
 
+* Reservoir level
+* Daily consumption
+* Water quality
+* Location
+* Status
+
+---
+
+### ♻️ Waste Management
+
+Manage waste collection information including:
+
+* Bin ID
+* Fill level
+* Capacity
+* Collection status
+* Location
+
+The system can identify critical waste bins based on their fill level.
+
+---
+
+### 🗺️ Interactive City Map
+
+The map provides a geographic view of city entities.
+
+It can display:
+
+* Buildings
+* Vehicles
+* Incidents
+* City locations
+
+Vehicle movement can be observed during the live simulation.
+
+---
+
+### 🔔 Real-Time Alert Center
+
+CityTwin includes a real-time alert system that detects abnormal city conditions.
+
+Alerts can be generated for conditions such as:
+
+* High traffic congestion
+* Poor air quality
+* High waste-bin fill levels
+* Low water reservoir levels
+* High energy consumption
+* Active high/critical incidents
+* Emergency vehicles
+
+The Alert Center supports:
+
+* Viewing alerts
+* Marking alerts as read
+* Marking all alerts as read
+* Clearing alerts
+
+---
+
+## 🔄 Real-Time Simulation
+
+CityTwin includes a city-state simulator that continuously updates city data.
+
+The simulator runs every **3 seconds** and sends updates through Socket.IO.
+
+The live system can simulate changes in:
+
+```text
 Traffic
-
-Air quality
-
-Temperature
-
+   ↓
+Environment
+   ↓
 Energy
-
+   ↓
 Water
-
+   ↓
 Waste
-
+   ↓
 Vehicles
+   ↓
+Alerts
+   ↓
+Dashboard
+```
 
-Incidents
+This allows the dashboard and analytics components to behave like a continuously changing smart-city monitoring system.
 
-Analytics
+---
 
-Live values are updated through Socket.IO.
+## 🛠️ Tech Stack
 
-🚨 Alert Center
+### Frontend
 
-CityTwin automatically generates alerts for conditions such as:
+* React
+* Vite
+* React Router
+* Axios
+* Socket.IO Client
+* CSS
 
-Severe traffic congestion
+### Backend
 
-Poor or critical air quality
+* Node.js
+* Express.js
+* Socket.IO
+* JWT
+* REST APIs
 
-Critical waste bins
+### Database
 
-Low reservoir levels
+* MongoDB
+* Mongoose
+* MongoDB Atlas
 
-High energy consumption
+### Deployment
 
-High-priority incidents
+* Render
+* GitHub
 
-Emergency vehicles
+---
 
-The Alert Center provides:
+## 🏗️ Architecture
 
-Live alerts
+```text
+                    ┌──────────────────────┐
+                    │      CityTwin       │
+                    │   React Frontend    │
+                    └──────────┬───────────┘
+                               │
+                    REST API / Socket.IO
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │    Express Server    │
+                    │      Node.js         │
+                    └──────────┬───────────┘
+                               │
+              ┌────────────────┼────────────────┐
+              │                │                │
+              ▼                ▼                ▼
+       REST Controllers   Socket.IO       City Simulator
+              │                │                │
+              └────────────────┼────────────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │       MongoDB        │
+                    │    MongoDB Atlas     │
+                    └──────────────────────┘
+```
 
-Alert history
+---
 
-Read/unread state
+## 📁 Project Structure
 
-Severity filtering
-
-Clear alert functionality
-
-Navigation to related systems
-
-🗺️ Interactive Map
-
-The map provides visual monitoring of city entities including:
-
-Buildings
-
-Vehicles
-
-Incidents
-
-Traffic
-
-Environmental information
-
-Vehicle locations can change through the real-time simulator.
-
-🛠️ Technology Stack
-
-Frontend
-
-React
-
-Vite
-
-React Router
-
-Tailwind CSS
-
-Axios
-
-Socket.IO Client
-
-Backend
-
-Node.js
-
-Express.js
-
-MongoDB
-
-Mongoose
-
-JWT
-
-Socket.IO
-
-Development Tools
-
-Git
-
-GitHub
-
-VS Code
-
-MongoDB
-
-🏗️ System Architecture
-
-                         CityTwin
-                            │
-              ┌─────────────┴─────────────┐
-              │                           │
-         React Frontend              Node.js Backend
-         Vite + Tailwind             Express + Socket.IO
-              │                           │
-              │ REST API                  │
-              └──────────────┬────────────┘
-                             │
-                     ┌───────┴───────┐
-                     │               │
-                  MongoDB       City Simulator
-                     │               │
-                     │          Live Updates
-                     │               │
-                     └───────┬───────┘
-                             │
-                       Alert Generator
-
-📂 Project Structure
-
+```text
 CityTwin/
 │
 ├── client/
 │   ├── public/
-│   └── src/
-│       ├── components/
-│       │   ├── Analytics.jsx
-│       │   └── CityMap.jsx
-│       │
-│       ├── context/
-│       │   ├── AuthContext.jsx
-│       │   └── CityContext.jsx
-│       │
-│       ├── pages/
-│       │   ├── Dashboard.jsx
-│       │   ├── CityManagement.jsx
-│       │   ├── BuildingsManagement.jsx
-│       │   ├── TrafficManagement.jsx
-│       │   ├── VehiclesManagement.jsx
-│       │   ├── IncidentsManagement.jsx
-│       │   ├── EnvironmentManagement.jsx
-│       │   ├── EnergyManagement.jsx
-│       │   ├── WaterManagement.jsx
-│       │   ├── WasteManagement.jsx
-│       │   ├── MapPage.jsx
-│       │   ├── Alerts.jsx
-│       │   └── Login.jsx
-│       │
-│       └── App.jsx
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Analytics.jsx
+│   │   │   └── CityMap.jsx
+│   │   │
+│   │   ├── context/
+│   │   │   ├── AuthContext.jsx
+│   │   │   └── CityContext.jsx
+│   │   │
+│   │   ├── pages/
+│   │   │   ├── Dashboard.jsx
+│   │   │   ├── CityManagement.jsx
+│   │   │   ├── BuildingsManagement.jsx
+│   │   │   ├── TrafficManagement.jsx
+│   │   │   ├── VehiclesManagement.jsx
+│   │   │   ├── IncidentsManagement.jsx
+│   │   │   ├── EnvironmentManagement.jsx
+│   │   │   ├── EnergyManagement.jsx
+│   │   │   ├── WaterManagement.jsx
+│   │   │   ├── WasteManagement.jsx
+│   │   │   ├── MapPage.jsx
+│   │   │   ├── Alerts.jsx
+│   │   │   ├── Login.jsx
+│   │   │   └── Register.jsx
+│   │   │
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   │
+│   └── package.json
 │
 ├── server/
 │   ├── config/
+│   │   └── db.js
+│   │
 │   ├── controllers/
+│   │
 │   ├── middleware/
+│   │
 │   ├── models/
+│   │
 │   ├── routes/
-│   ├── simulator/
+│   │
 │   ├── sockets/
-│   └── utils/
+│   │   └── socketHandler.js
+│   │
+│   ├── simulator/
+│   │   └── citySimulator.js
+│   │
+│   ├── utils/
+│   │   ├── generateToken.js
+│   │   ├── seedData.js
+│   │   └── alertGenerator.js
+│   │
+│   ├── server.js
+│   └── package.json
 │
 └── README.md
+```
 
-⚙️ Installation
-
-1. Clone the repository
-
-git clone https://github.com/Ashishr0/CityTwin.git
-cd CityTwin
-
-2. Install backend dependencies
-
-cd server
-npm install
-
-3. Install frontend dependencies
-
-Open another terminal:
-
-cd CityTwin/client
-npm install
-
-🔑 Environment Variables
-
-Create a .env file inside the server directory.
-
-Example:
-
-PORT=5000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-CLIENT_URL=http://localhost:5173
-
-Never commit real database credentials or secrets to GitHub.
-
-▶️ Running the Project
-
-Start the Backend
-
-cd server
-npm run dev
-
-The backend uses:
-
-npm start
-
-for a production-style start.
-
-Start the Frontend
-
-Open another terminal:
-
-cd client
-npm run dev
-
-The frontend normally runs at:
-
-http://localhost:5173
-
-👤 Local Demo Login
-
-For local development, the project currently uses:
-
-Email: admin@citytwin.com
-Password: Admin@12345
-
-This is a development/demo credential. Change or remove it before
-production deployment.
-
-🔄 Real-Time Simulation
-
-CityTwin uses Socket.IO to continuously update simulated city data.
-
-The simulator sends updates approximately every 3 seconds.
-
-The live system can update:
-
-Traffic congestion
-
-Traffic speed
-
-AQI
-
-Temperature
-
-Energy consumption
-
-Renewable energy percentage
-
-Water levels
-
-Water consumption
-
-Waste fill levels
-
-Vehicle positions
-
-Alerts
-
-The React application receives these updates through the Socket.IO
-connection.
-
-🚨 Alert Generation
-
-The alert generator evaluates live city conditions and creates alerts
-when configured thresholds are reached.
-
-Examples include:
-
-Traffic congestion >= 80%
-AQI >= 140
-Waste fill level >= 90%
-Reservoir level <= 50%
-Energy consumption >= 7500
-High/Critical incidents
-Emergency vehicles
-
-Alerts are sent with live city updates and maintained by the frontend
-Alert Center.
-
-📊 Dashboard Analytics
-
-The dashboard maintains a rolling history of recent live measurements
-and uses that information to display interactive analytics.
-
-The dashboard can visualize trends in:
-
-Traffic congestion
-
-Traffic speed
-
-AQI
-
-Temperature
-
-Energy
-
-Renewable energy
-
-Water
-
-Waste
-
-🔒 Security
-
-CityTwin includes:
-
-JWT authentication
-
-Protected API routes
-
-Role-based authorization
-
-Environment variables for sensitive configuration
-
-Password authentication
-
-Server-side authorization middleware
-
-🧪 Build Verification
-
-To verify the frontend production build:
-
-cd client
-npm run build
-
-To check repository status:
-
-cd ..
-git status
-
-🚀 Deployment
-
-CityTwin can be deployed using separate frontend and backend services.
-
-The backend requires support for:
-
-Node.js
-
-Express
-
-Socket.IO/WebSockets
-
-Environment variables
-
-MongoDB connectivity
-
-When deploying the backend, configure:
-
-MONGO_URI
-JWT_SECRET
-CLIENT_URL
-
-The frontend must use the deployed backend URL for API and Socket.IO
-communication.
-
-🔮 Future Scope
-
-Possible future improvements include:
-
-IoT sensor integration
-
-Real-world traffic APIs
-
-Predictive analytics
-
-Machine-learning-based forecasting
-
-Smart energy optimization
-
-Automated emergency response
-
-Historical reporting
-
-Cloud deployment
-
-Mobile application
-
-Advanced GIS integration
-
-🎓 Academic Use
-
-CityTwin is suitable as a BTech Computer Science Engineering project
-and demonstrates:
-
-Full-stack web development
-
-REST API development
-
-MongoDB database management
-
-Authentication and authorization
-
-Real-time communication
-
-Data visualization
-
-Simulation
-
-Interactive maps
-
-Modular software architecture
-
-👨‍💻 Author
-
-Ashish Kumar Raw
-
-BTech Computer Science Engineering Student
-
-Interests
-
-Full Stack Development
-
-Java
-
-Web Development
-
-Software Development
-
-📄 License
-
-This project is intended primarily for educational and academic
-purposes.
+---
