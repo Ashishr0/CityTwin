@@ -371,61 +371,6 @@ export default function Dashboard() {
 
                     </div>
 
-                    {/* SIDEBAR FOOTER */}
-
-                    <div className="border-t border-indigo-100 bg-gradient-to-br from-slate-50 to-indigo-50/70 p-3">
-
-                        <div className="rounded-xl border border-indigo-100 bg-white p-3 shadow-sm">
-
-                            <div className="flex items-center gap-2">
-
-                                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-blue-500 text-xs font-bold text-white shadow-sm">
-                                    {(user?.name || "A").charAt(0).toUpperCase()}
-                                </div>
-
-                                <div className="min-w-0 flex-1">
-
-                                    <p className="text-[9px] font-medium uppercase tracking-wider text-slate-400">
-                                        Signed in as
-                                    </p>
-
-                                    <p className="mt-0.5 truncate text-xs font-bold text-slate-800">
-                                        {user?.name || "City Admin"}
-                                    </p>
-
-                                </div>
-
-                                <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_0_3px_rgba(16,185,129,0.10)]" />
-
-                            </div>
-
-                            <div className="mt-3 flex items-center justify-between rounded-lg bg-slate-50 px-2.5 py-2">
-
-                                <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
-                                    Role
-                                </span>
-
-                                <span className="rounded-full bg-indigo-50 px-2 py-0.5 text-[9px] font-bold text-indigo-600">
-                                    {user?.role || "ADMIN"}
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                        <button
-                            onClick={logout}
-                            className="group mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-transparent px-3 py-2 text-xs font-semibold text-slate-500 transition-all duration-200 hover:border-red-100 hover:bg-red-50 hover:text-red-500"
-                        >
-                            <span className="transition-transform duration-200 group-hover:-translate-x-1">
-                                ↪
-                            </span>
-
-                            Logout
-                        </button>
-
-                    </div>
-
                 </div>
 
             </aside>
@@ -530,10 +475,6 @@ export default function Dashboard() {
                             <p className="text-xs font-bold uppercase tracking-wider text-blue-600">
                                 LIVE CITY MONITORING
                             </p>
-
-                            <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-                                Welcome back, {user?.name || "City Admin"} 👋
-                            </h1>
 
                             <p className="mt-2 text-sm text-slate-500">
                                 Monitor your city's infrastructure and
