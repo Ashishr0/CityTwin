@@ -72,14 +72,14 @@
 
 #next-steps {
   display: flex;
-  border-top: 1px solid var(--border);
+  border-top: 0.5px solid var(--border);
   text-align: left;
 
   & > div {
     flex: 1 1 0;
-    padding: 32px;
+    padding: 25px;
     @media (max-width: 1024px) {
-      padding: 24px 20px;
+      padding: 16px 13px;
     }
   }
 
